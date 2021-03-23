@@ -16,22 +16,22 @@
     <!-- Site Icons -->
     <link rel="shortcut icon" href="{{url_for('static', filename='image/favicon.ico')}}" type="image/x-icon">
     <link rel="apple-touch-icon" href="{{url_for('static',filename='images/apple-touch-icon.png')}}">
+	
 
     <!-- Bootstrap CSS -->
     <link href="{{url_for('static',filename='css/bootstrap.min.css')}}" rel="stylesheet">
-	<!-- Site CSS -->
-    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+		<!-- Site CSS -->
+		<link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
 	<!-- Fontawesome CSS -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/all.min.css')}}">
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/responsive.css')}}">
-    
+    <link rel="stylesheet" href="{{url_for('static',filename='css/login-register.css')}}">
 
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
 </head>
 
 <body>
@@ -49,7 +49,7 @@
 								<div class="col-lg-6 col-sm-6 col-xl-6">
 									<a href="{{url_for('register')}}" class="active" id="register-form-link">Register</a>
 								</div>
-								<div class="or">OR</div>
+								<!-- <div class="or">OR</div> -->
 							</div>
 						</div>
 						<div class="panel-body">

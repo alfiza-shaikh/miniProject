@@ -1,0 +1,112 @@
+body{
+		background-color: #3bb888 ;
+	}
+.a{
+	color: #3a7760
+    }
+		.panel-login>.panel-heading {
+	color: #b1c5be;
+	background: rgba(207, 250, 207, 0.534);
+	text-align:center;
+	position: relative;
+	border-radius: 0;
+}
+	.panel-login>.panel-heading a{
+	text-decoration: none;
+	color: #fff;
+	font-weight: bold;
+	font-size: 15px;
+	background: rgba(82,200,155,255);
+	padding: 10px 16px;
+	border-radius: 50px;
+	display: block;
+	-webkit-transition: all 0.1s linear;
+	-moz-transition: all 0.1s linear;
+	transition: all 0.1s linear;
+}
+.panel-login>.panel-heading a.active{
+	color: #3a7760;
+	background: #ffffff;
+	font-size: 15px;
+}
+
+.icon-lp{
+	color: #63d395;
+}
+
+.panel-login input[type="text"],.panel-login input[type="email"],.panel-login input[type="password"] {
+	padding: 16px 20px 16px 50px;
+	border: 2px solid #bce0cb;
+	font-size: 16px;
+	border-radius: 10px;
+	-webkit-transition: all 0.1s linear;
+	-moz-transition: all 0.1s linear;
+	transition: all 0.1s linear;
+	
+}
+
+.panel-login input:hover,
+.panel-login input:focus {
+	outline:none;
+	-webkit-box-shadow: 0 12px 15px 0 rgba(133, 245, 176, 0.24),0 17px 50px 0 rgba(180, 245, 215, 0.19);
+	-moz-box-shadow: 0 12px 15px 0 rgba(133, 245, 176, 0.24),0 17px 50px 0 rgba(180, 245, 215, 0.19);
+	box-shadow: none;
+	border-color: #bce0cb;
+}
+
+.che-box .checkbox-in{
+	position: relative;
+	display: block;
+	margin-bottom: 4px;
+	padding-left: 27px;
+	font-size: 15px;
+	line-height: 27px;
+	color: #00411d;
+	cursor: pointer;
+}
+
+.login-with-google-btn {
+	color: #3a7760;
+}
+
+.btn-login {
+	background-color:rgba(82,200,155,255);
+	border-color: rgba(82,200,155,255);
+}
+
+.btn-login:hover,
+.btn-login:focus {
+	color: #fff;
+	background-color: #3a7760;
+	border-color: #3a7760;
+}
+.btn-register {
+	background-color:rgba(82,200,155,255);
+	outline: none;
+	color: #fff;
+	font-size: 14px;
+	height: auto;
+	font-weight: normal;
+	padding: 14px 0;
+	text-transform: uppercase;
+	border-color: rgba(82,200,155,255);
+	border-radius: 50px;
+}
+.btn-register:hover,
+.btn-register:focus {
+	color: #fff;
+	background-color: #3a7760;
+	border-color: #3a7760;
+}
+
+
+.forgot-password {
+	color: #3a7760;
+}
+.forgot-password:hover,
+.forgot-password:focus {
+	color: #00411d;
+}
+
+
+
