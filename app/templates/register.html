@@ -55,30 +55,64 @@
 						<div class="panel-body">
 							<div class="row">
 								<div class="col-lg-12">
-									<form id="register-form" action="#" method="post" role="form" style="display: block;">
+									{% for message in get_flashed_messages() %}
+										<div class="alert alert-warning">
+											<button type="button" class="close" data-dismiss="alert">&times;</button>
+											{{ message }}
+										</div>
+									{% endfor %}
+									<form id="register-form" action="" method="post" role="form" style="display: block;">
 										<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 										<div class="form-group">
 											<label class="icon-lp"><i class="fas fa-user-tie"></i></label>
 											<input type="text" name="name" id="name" tabindex="1" class="form-control" placeholder="Full Name" value="" required="">
 										</div>
+										{% if registerform %}
+											{% for errors in registerform.name.errors %}
+												<p class="form-text text-danger">
+													{{ errors }}
+												</p>
+											{% endfor %}
+											{% endif %}
 										<div class="form-group">
 											<label class="icon-lp"><i class="fas fa-envelope"></i></label>
 											<input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address" value="" required="">
 										</div>
+										{% if registerform %}
+											{% for errors in registerform.email.errors %}
+												<p class="form-text text-danger">
+													{{ errors }}
+												</p>
+											{% endfor %}
+											{% endif %}
 										<div class="form-group">
 											<label class="icon-lp"><i class="fas fa-key"></i></label>
 											<input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password" required="">
 										</div>
+										{% if registerform %}
+										{% for errors in registerform.password.errors %}
+											<p class="form-text text-danger">
+												{{ errors }}
+											</p>
+										{% endfor %}
+										{% endif %}
 										<div class="form-group">
 											<label class="icon-lp"><i class="fas fa-key"></i></label>
-											<input type="password" name="confirm-password" id="confirm-password" tabindex="2" class="form-control" placeholder="Confirm Password" required="">
+											<input type="password" name="cpassword" id="confirm-password" tabindex="2" class="form-control" placeholder="Confirm Password" required="">
 										</div>
-
+										{% if registerform %}
+										{% for errors in registerform.cpassword.errors %}
+											<p class="form-text text-danger">
+												{{ errors }}
+											</p>
+										{% endfor %}
+										{% endif %}
+<!-- 
 										<div class="che-box">
 											<label class="checkbox-in">
-												<input name="checkbox" type="checkbox"> <span></span>I agree to the <a href="#"> Terms and Conditions </a> and <a href="#">Privacy Policy </a>
+												<input name="checkbox" type="checkbox" > <span></span>I agree to the <a href="#"> Terms and Conditions </a> and <a href="#">Privacy Policy </a>
 											</label>
-										</div>
+										</div> -->
 
 										<div class="form-group">
 											<div class="row">

@@ -8,13 +8,13 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
      <!-- Site Metas -->
-    <title>Login and Register Form</title>
+    <title>Login</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
     <meta name="author" content="">
 
     <!-- Site Icons -->
-    <link rel="shortcut icon" href="{{url_for('static', filename='image/favicon.ico')}}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{url_for('static', filename='images/favicon.ico')}}" type="image/x-icon">
     <link rel="apple-touch-icon" href="{{url_for('static',filename='images/apple-touch-icon.png')}}">
 
     <!-- Bootstrap CSS -->
@@ -35,6 +35,7 @@
 
 <body>
 <div  class="main-form-box">
+	
 	<div class="md-form">
 		<div class="container">
 			<div class="row">
@@ -54,26 +55,42 @@
 						<div class="panel-body">
 							<div class="row">
 								<div class="col-lg-12">
-									<form id="login-form" action="#" method="post" role="form" style="display: block;">
+			
+										{% for message in get_flashed_messages() %}
+										<div class="alert alert-warning">
+											<button type="button" class="close" data-dismiss="alert">&times;</button>
+											{{ message }}
+										</div>
+										{% endfor %}
+									
+
+									<form id="login-form" action="" method="post" role="form" style="display: block;">
 										<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 										<div class="form-group">
 											<label class="icon-lp"><i class="fas fa-envelope"></i></label>
 											<input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address" value="" required="">
 											{% if loginform %}
 											{% for errors in loginform.email.errors %}
-												<small class="form-text text-muted ">
+												<p class="form-text text-danger">
 													{{ errors }}
-												</small>
+												</p>
 											{% endfor %}
 											{% endif %}
 										</div>
 										<div class="form-group">
 											<label class="icon-lp"><i class="fas fa-key"></i></label>
 											<input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password" required="">
+											{% if loginform %}
+											{% for errors in loginform.password.errors %}
+												<p class="form-text text-danger ">
+													{{ errors }}
+												</p>
+											{% endfor %}
+											{% endif %}
 										</div>
 										<div class="che-box">
 											<label class="checkbox-in">
-												<input name="checkbox" type="checkbox" tabindex="3" id="remember"> <span></span>
+												<input type="checkbox" tabindex="3" id="remember"> <span></span>
 												Remember Me
 											</label>
 										</div>
