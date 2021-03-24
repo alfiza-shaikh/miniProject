@@ -4,3 +4,39 @@ CREATE TABLE users (
 	email varchar(100) primary key,
 	pass varchar(500)  NOT NULL
 	);
+
+CREATE TABLE history(
+	action_name VARCHAR(50) NOT NULL,
+	action_on VARCHAR(500) NOT NULL,
+	user_email varchar(100) NOT NULL,
+	timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT user_email FOREIGN KEY(user_email) REFERENCES users(email) ON DELETE CASCADE
+);
+CREATE TABLE folders(
+	folder_name VARCHAR(500) NOT NULL,
+	user_email varchar(100) NOT NULL,
+	CONSTRAINT user_email FOREIGN KEY(user_email) REFERENCES users(email) ON DELETE CASCADE,
+	UNIQUE (folder_name, user_email)
+);
+CREATE TABLE videos(
+	video_name VARCHAR(100) NOT NULL,
+	video_comment VARCHAR(500),
+	video_ref VARCHAR(500),
+	user_email varchar(100) NOT NULL,
+	folder_name varchar(500) NOT NULL,
+	timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT folder_user FOREIGN KEY(folder_name, user_email) 
+		REFERENCES folders(folder_name, user_email) ON UPDATE CASCADE,
+	UNIQUE (video_name,folder_name,user_email)
+);
+CREATE TABLE vehicles(
+	vehicle_LPN VARCHAR(20) NOT NULL,
+	vehicle_type VARCHAR(50),
+	vehicle_color VARCHAR(50),
+	video_name VARCHAR(100) NOT NULL,
+	folder_name varchar(500) NOT NULL,
+	user_email varchar(100) NOT NULL,
+	time time,
+	CONSTRAINT video_folder_user FOREIGN KEY(video_name,folder_name, user_email) 
+		REFERENCES videos(video_name,folder_name, user_email) ON UPDATE CASCADE
+);
