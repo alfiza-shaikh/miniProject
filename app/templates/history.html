@@ -10,6 +10,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <!-- site metas -->
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.4.2/dist/css/uikit.min.css">
+
 <title>LNPR</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
@@ -25,7 +28,87 @@
 <!-- Tweaks for older IEs-->
 <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
-
+<style>
+   .uk-timeline .uk-timeline-item .uk-card {
+      max-height: 300px;
+   }
+   
+   .uk-timeline .uk-timeline-item {
+       display: flex;
+       position: relative;
+   }
+   
+   .uk-timeline .uk-timeline-item::before {
+       background: #e5e9ee;
+       content: "";
+       height: 100%;
+       left: 10px;
+       position: absolute;
+       top: 20px;
+       width: 2px;
+      z-index: -1;
+   }
+   
+   .uk-timeline .uk-timeline-item .uk-timeline-icon .uk-badge {
+      margin-top: 20px;
+       width: 25px;
+       height: 25px;
+       background-color: darkcyan;
+   }
+   
+   .uk-timeline .uk-timeline-item .uk-timeline-content {
+       -ms-flex: 1 1 auto;
+       flex: 1 1 auto;
+       padding: 0 0 0 1rem;
+   }
+   
+   div.a {
+     text-align: right;
+   }
+   
+   .uk-card-title .uk-card-header{
+       max-height: 30px;
+   }
+   
+   .button {
+     border: none;
+     color: white;
+     padding: 5px 5px;
+     text-align: center;
+     text-decoration: none;
+     display: inline-block;
+     font-size: 15px;
+     margin: 4px 2px;
+     /* cursor: pointer; */
+   }
+   
+   .button-delete
+    {background-color: red;}
+   
+    
+   .button-rename
+    {background-color: rgb(0, 116, 35);}
+   
+    
+   .button-upload
+    {background-color: rgb(148, 202, 48);}
+   
+    .alignleft {
+      float: left;
+   }
+   .alignright {
+      float: right;
+       font-size: 16px;
+   }
+   
+   .content{
+       font-size: 18px;
+   }
+   
+   .h5{
+       font-size: small;
+   }
+   </style>
 </head>
 <body>
 	<header id="home"class="section">
@@ -72,7 +155,158 @@
          <!-- end header inner -->
 	</header>
     <!-- banner end -->    
-    
+    <br>
+<h2 align="center"> History </h2>
+    <div class="container-fluid" align="center">
+        <form action="" >
+        <div class="row">
+            <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-2">
+                            Select Date
+                        </div>
+                        <div class=" col-5">
+                            <label>From: </label>
+                            <input type="date" id="fromdate" name="fromdate">
+                        </div>
+                        <div class="col-5">
+                            <label>To: </label>
+                            <input type="date" id="todate" name="todate">
+                        </div>
+                    </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="offset-8 col-4">
+                    <button type="submit" class="btn btn-success btn-search"><a href="">Apply</a></button>   
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+
+
+<!-- <div class="uk-container uk-padding">
+    <div class="uk-timeline">
+        <div class="uk-timeline-item">
+            <div class="uk-timeline-icon">
+                <span class="uk-badge"><span uk-icon="check"></span></span>
+            </div>
+            <div class="uk-timeline-content">
+                <div class="uk-card uk-card-default uk-margin-medium-bottom uk-overflow-auto">
+                    <div class="uk-card-header">
+                        <div class="uk-grid-small uk-flex-middle" uk-grid>
+                            <h7 class="uk-card-title"></h7>
+                                    <p class="alignleft"><button class="button button-delete"><i class="fa fa-trash-o" style="font-size:20px"></i> Delete </button>
+                                    <p class="alignright"><time datetime="2020-07-08">July 8</time></p>
+                            
+                                
+                        <div class="a"><time datetime="2020-07-08">July 8</time></div>
+                        
+                        </div>
+                    </div>
+                    <div class="uk-card-body">
+						<p class="content">Video 5 deleted
+                           
+                        </p>
+                        
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <div class="uk-container uk-padding">
+            <div class="uk-timeline">
+                <div class="uk-timeline-item">
+                    <div class="uk-timeline-icon">
+                        <span class="uk-badge"><span uk-icon="check"></span></span>
+                    </div>
+                    <div class="uk-timeline-content">
+                        <div class="uk-card uk-card-default uk-margin-medium-bottom uk-overflow-auto">
+                            <div class="uk-card-header">
+                                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                                    <p class="content"><time datetime="2020-07-08">16/04/2020</time></p>
+                                   <button class="button button-delete"><i class="fa fa-trash-o" style="font-size:15px"></i> Delete </button>
+                                    <!-- <span class="uk-label uk-label-success uk-margin-auto-left">Feature</span> -->
+                                </div>
+                            </div>
+                            <div class="uk-card-body">
+                                       <ul><li> <p class="content">Video 5 deleted 
+                                        <time datetime="2020-07-08" class="alignright">09:45 PM</time>
+                                       </li>
+                                       <!-- <li> <p class="content">Video 10 deleted 
+                                        <time datetime="2020-07-08" class="alignright">06:05 PM</time>
+                                       </li> -->
+                                    </ul>            
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        <div class="uk-timeline-item">
+            <div class="uk-timeline-icon">
+                <span class="uk-badge"><span uk-icon="check"></span></span>
+            </div>
+            <div class="uk-timeline-content">
+                <div class="uk-card uk-card-default uk-margin-medium-bottom uk-overflow-auto">
+                    <div class="uk-card-header">
+                        <div class="uk-grid-small uk-flex-middle" uk-grid>
+                            <p class="content"><time datetime="2020-07-07">13/04/2020</time></p>
+                            <button class="button button-rename"><i class="fa fa-edit" style="font-size:20px"></i> Rename </button><button class="button button-delete"><i class="fa fa-trash-o" style="font-size:20px"></i> Delete </button>
+                            <!-- <span class="uk-label uk-label-warning uk-margin-auto-left">Test</span> -->
+                        </div>
+                    </div>
+                    <div class="uk-card-body">
+                        <ul><li> <p class="content">Cam 3 renamed to Cam 2 
+                         <time datetime="2020-07-08" class="alignright">10:25 AM</time>
+                        </li>
+                        <li> <p class="content">Video 3 deleted 
+                         <time datetime="2020-07-08" class="alignright">09:15 AM</time>
+                        </li>
+                     </ul>            
+             </div>
+                </div>
+            </div>
+        </div>
+				<div class="uk-timeline-item">
+            <div class="uk-timeline-icon">
+                <span class="uk-badge"><span uk-icon="check"></span></span>
+            </div>
+            <div class="uk-timeline-content">
+                <div class="uk-card uk-card-default uk-margin-medium-bottom uk-overflow-auto">
+                    <div class="uk-card-header">
+                        <div class="uk-grid-small uk-flex-middle" uk-grid>
+                            <!-- <h3 class="uk-card-title"><time datetime="2020-07-06">July 6</time></h3>
+                            <span class="uk-label uk-label-danger uk-margin-auto-left">Fix</span>
+                        </div>
+                    </div>
+                    <div class="uk-card-body">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+                        </p>
+                    </div> -->
+                    <p class="content"><time datetime="2020-07-07">12/04/2020</time></p>
+                    <button class="button button-upload"><i class="fa fa-upload" style="font-size:20px"></i> Upload </button>
+                    <!-- <span class="uk-label uk-label-warning uk-margin-auto-left">Test</span> -->
+                </div>
+            </div>
+            <div class="uk-card-body">
+                <ul><li> <p class="content">Video 12 uploaded
+                 <time datetime="2020-07-08" class="alignright">05:30 PM</time>
+                </li>
+                <li> <p class="content">Video 11 uploaded 
+                 <time datetime="2020-07-08" class="alignright">05:28 PM</time>
+                </li>
+                <li> <p class="content">Video 10 uploaded 
+                    <time datetime="2020-07-08" class="alignright">05:27 PM</time>
+                   </li>
+             </ul> 
+                </div>
+								
+            </div>
+            <a href="#"><span class="uk-margin-small-right" uk-icon="triangle-down"></span>Load more</a>
+        </div>
+    </div>
+</div>
     <!-- Javascript files-->
     <script src="js/jquery.min.js"></script>
     <script src="js/popper.min.js"></script>
