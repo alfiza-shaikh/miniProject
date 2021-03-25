@@ -39,7 +39,7 @@ def login(email,password):
         cursor.execute("SELECT * FROM users WHERE email='"+email+"' AND pass='"+password+"'")
         data = cursor.fetchone()
         if data:
-            return data[1]
+            return data[2]
         print(data)
     except (Exception, psycopg2.DatabaseError) as error:
         connection.rollback()

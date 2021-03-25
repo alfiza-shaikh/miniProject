@@ -4,6 +4,7 @@ from wtforms import TextField, PasswordField, validators, StringField, SubmitFie
 from flask_wtf.csrf import CSRFProtect
 import database.authdb
 import hashlib
+from decorators import login_required
 
 
 csrf = CSRFProtect()
@@ -23,7 +24,7 @@ def index():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    if "name" not in session:
+    if "email" not in session:
         if "login-submit" in request.form:
             form = Login(request.form)
             
@@ -33,9 +34,9 @@ def login():
                 print(email,password)
             if form.validate_on_submit():
                 print(form.errors)
-                name=database.authdb.login(email,password)
-                if name:
-                    session['name']=name   
+                email_id=database.authdb.login(email,password)
+                if email_id:
+                    session['email']=email_id  
                     print('Logged in ' + email)
                     return redirect(url_for('index'))
                 else:
@@ -47,7 +48,7 @@ def login():
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    if "name" not in session:
+    if "email" not in session:
         if "register-submit" in request.form:
             form = Register(request.form)
             if request.method == 'POST':
@@ -71,10 +72,28 @@ def register():
     
 
 @app.route('/logout')
+@login_required
 def logout():
-   # remove the username from the session if it is there
-   session.pop('name', None)
+   # remove the email from the session if it is there
+   session.pop('email', None)
    return redirect(url_for('index'))
+
+@app.route("/uploads", methods=['GET', 'POST'])
+@login_required
+def uploads():
+    return render_template('uploads.html')
+
+@app.route("/history", methods=['GET', 'POST'])
+@login_required
+def history():
+    return render_template('history.html')
+
+@app.route("/detected_vehicles", methods=['GET', 'POST'])
+@login_required
+def detected_vehicles():
+    return render_template('detected_vehicles.html')
+
+
 
 """
 @app.route("/authenticate", methods=['GET', 'POST'])

@@ -59,11 +59,11 @@
                            
                            <nav class="main-menu">
                               <ul class="menu-area-main">
-                                 <li><a href="#home"><i class="fa fa-car" style="font-size:22px"></i> Home</a></li>
+                                 <li><a href="{{url_for('index')}}" class="nav-active"><i class="fa fa-car" style="font-size:22px"></i> Home</a></li>
                                  
-                                 {% if session['name'] %}
-                                 <li><a href="#uploads"><i class="fa fa-upload" style="font-size:22px"></i> My Uploads</a></li>
-                                 <li><a href="#history"><i class="fa fa-history" style="font-size:22px"></i> History</a></li>
+                                 {% if session['email'] %}
+                                 <li><a href="{{url_for('uploads')}}"><i class="fa fa-upload" style="font-size:22px"></i> My Uploads</a></li>
+                                 <li><a href="{{url_for('history')}}"><i class="fa fa-history" style="font-size:22px"></i> History</a></li>
                                  <li><a href="{{url_for('logout')}}"><i class="fa fa-sign-out" style="font-size:22px"></i> Logout</a></li>
                                  {% else %}
                                  <li><a href="{{url_for('login')}}"><i class="fa fa-user" style="font-size:22px"></i> Log In</a></li>

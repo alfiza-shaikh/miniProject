@@ -192,9 +192,11 @@ ul, li, ol {
 }
 
 .main-menu ul>li a:hover {
-    color: #fff;
+    color: #44ffbb;
 }
-
+.main-menu ul>li .nav-active{
+    color: #44ffbb;
+}
 .mean-container .mean-bar { background: #2aab7c;}
 
 
@@ -677,12 +679,5 @@ button.main_bt a:hover {
   margin-left: 0px; margin-right: 0px; }
 .copy_text a:hover{ color: #000; }
 .footer_menu{ padding-right: 10px; }
-
-
-
-
-
-
-}	
 
 

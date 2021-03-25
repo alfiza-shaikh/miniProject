@@ -8,14 +8,20 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
      <!-- Site Metas -->
-    <title>Login and Register Form</title>
+    <title>Register</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!-- Site Icons -->
-    <link rel="shortcut icon" href="{{url_for('static', filename='image/favicon.ico')}}" type="image/x-icon">
-    <link rel="apple-touch-icon" href="{{url_for('static',filename='images/apple-touch-icon.png')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='home/css/bootstrap.min.css')}}">
+	<!-- style css -->
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='home/css/style.css')}}">
+	<!-- Responsive-->
+	<link rel="stylesheet" href="{{url_for('static', filename='home/css/responsive.css')}}">
+	<!-- Scrollbar Custom CSS -->
+	<link rel="stylesheet" href="{{url_for('static', filename='home/css/jquery.mCustomScrollbar.min.css')}}">
+	<!-- Tweaks for older IEs-->
+	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
 	
 
     <!-- Bootstrap CSS -->
@@ -35,6 +41,49 @@
 </head>
 
 <body>
+	<header id="home"class="section">
+		<div class="header_main">
+			 <!-- header inner -->
+			 <div class="header">
+				<div class="container">
+				   <div class="row">
+					  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col logo_section">
+						 <div class="full">
+							<div class="center-desk">
+							   <div class="logo"><a href="#home"><img src="{{url_for('static', filename='home/images/logo-empty.png')}}" style="max-width: 100%;"></a> 
+							   </div>
+							</div>
+						 </div>
+					  </div>
+					  <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
+						 <div class="menu-area">
+							<div class="limit-box">
+							   
+							   <nav class="main-menu">
+								  <ul class="menu-area-main">
+									 <li><a href="{{url_for('index')}}"><i class="fa fa-car" style="font-size:22px"></i> Home</a></li>
+									 
+									 {% if session['email'] %}
+									 <li><a href="{{url_for('uploads')}}"><i class="fa fa-upload" style="font-size:22px"></i> My Uploads</a></li>
+									 <li><a href="{{url_for('history')}}"><i class="fa fa-history" style="font-size:22px"></i> History</a></li>
+									 <li><a href="{{url_for('logout')}}"><i class="fa fa-sign-out" style="font-size:22px"></i> Logout</a></li>
+									 {% else %}
+									 <li><a href="{{url_for('login')}}"><i class="fa fa-user" style="font-size:22px"></i> Log In</a></li>
+									 <li><a href="{{url_for('register')}}"  class="nav-active"><i class="fa fa-user-plus" style="font-size:22px"></i> Register</a></li>
+									 {% endif %}
+									 
+									 <!-- <li><a href="#feedback"><i class="fa fa-comments-o" style="font-size:22px"></i> Feedback</a></li> -->
+								  </ul>
+							   </nav>
+							</div>
+						 </div>
+					 </div>
+				   </div>
+				</div>
+			 </div>
+			 </div>
+			 <!-- end header inner -->
+		</header>
 <div  class="main-form-box">
 	<div class="md-form">
 		<div class="container">

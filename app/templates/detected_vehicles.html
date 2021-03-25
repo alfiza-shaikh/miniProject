@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- basic -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- mobile metas -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- site metas -->
+<title>LNPR</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">	
+<!-- bootstrap css -->
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='home/css/bootstrap.min.css')}}">
+<!-- style css -->
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='home/css/style.css')}}">
+<!-- Responsive-->
+<link rel="stylesheet" href="{{url_for('static', filename='home/css/responsive.css')}}">
+<!-- Scrollbar Custom CSS -->
+<link rel="stylesheet" href="{{url_for('static', filename='home/css/jquery.mCustomScrollbar.min.css')}}">
+<!-- Tweaks for older IEs-->
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+
+ <style>
+
+.col-4,.col-2,.col-5{
+    padding-top:15px;
+}
+
+input,select {
+  color:#2aab7c;
+  border:solid 2px #55b994;
+  border-radius: 3px;
+  max-width: 100%;
+}
+.filters,.table{
+
+    margin:0;
+}
+
+.alert-primary{
+    background-color: #c2f7e3;
+    color:black;
+    margin-top: 5px;
+}
+.close{
+    color:#ff0800
+}
+td a{
+color:#2aab7c;
+}
+td a:hover{
+color:#315347;
+}
+thead{
+    background-color: #55b994;
+    color: white;
+}
+.btn-search{
+    float: right;
+}
+</style> 
+</head>
+<body>
+	<header id="home"class="section">
+	<div class="header_main">
+         <!-- header inner -->
+         <div class="header">
+            <div class="container">
+               <div class="row">
+                  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col logo_section">
+                     <div class="full">
+                        <div class="center-desk">
+                           <div class="logo"><a href="#home"><img src="{{url_for('static', filename='home/images/logo-empty.png')}}" style="max-width: 100%;"></a> 
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
+                     <div class="menu-area">
+                        <div class="limit-box">
+                           
+                           <nav class="main-menu">
+                              <ul class="menu-area-main">
+                                 <li><a href="{{url_for('index')}}"><i class="fa fa-car" style="font-size:22px"></i> Home</a></li>
+                                 
+                                 {% if session['email'] %}
+                                 <li><a href="{{url_for('uploads')}}" class="nav-active"><i class="fa fa-upload" style="font-size:22px"></i> My Uploads</a></li>
+                                 <li><a href="{{url_for('history')}}"><i class="fa fa-history" style="font-size:22px"></i> History</a></li>
+                                 <li><a href="{{url_for('logout')}}"><i class="fa fa-sign-out" style="font-size:22px"></i> Logout</a></li>
+                                 {% else %}
+                                 <li><a href="{{url_for('login')}}"><i class="fa fa-user" style="font-size:22px"></i> Log In</a></li>
+                                 <li><a href="{{url_for('register')}}"><i class="fa fa-user-plus" style="font-size:22px"></i> Register</a></li>
+                                 {% endif %}
+                                 
+                                 <!-- <li><a href="#feedback"><i class="fa fa-comments-o" style="font-size:22px"></i> Feedback</a></li> -->
+                              </ul>
+                           </nav>
+                        </div>
+                     </div>
+                 </div>
+               </div>
+            </div>
+         </div>
+         </div>
+         <!-- end header inner -->
+	</header>
+    <!-- banner end -->
+
+    	<div class="container-fluid">
+            <form action="" >
+    		<div class="row">
+    			<div class="col-md-6">
+                        <div class="row">
+                            <div class="col-2">
+                                Select Date
+                            </div>
+                            <div class=" col-5">
+                                <label>From: </label>
+                                <input type="date" id="fromdate" name="fromdate">
+                            </div>
+                            <div class="col-5">
+                                <label>To: </label>
+                                <input type="date" id="todate" name="todate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-2">
+                                Select Time
+                            </div>
+                            <div class="col-5">
+                                <label>From: </label>
+                                <input type="time" id="fromtime" name="fromtime">
+                            </div>
+                            <div class="col-5">
+                                <label>To: </label>
+                                <input type="time" id="totime" name="totime">
+                            </div>
+                        </div>
+    			</div>
+    			<div class="col-md-6">
+    				<div class="row">
+                        <div class="col-4">
+                            <input type="text" placeholder="Enter vehicle number" name="vehiclenumber">
+                        </div>
+                        <div class="col-4">
+                            <select name="vehicles" id="vehicles">
+                                <option value="">Select Vehicle Type</option>
+                                <option value="car">Car</option>
+                                <option value="scooter">Scooter</option>
+                                <option value="truck">Truck</option>
+                              </select>
+                            </div>
+                        <div class="col-4">
+                            <input type="text" placeholder="Enter color" name="color">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="offset-8 col-4">
+                        <button type="submit" class="btn btn-success btn-search"><a href="">Apply</a></button>   
+                        </div>
+                    </div>
+    			</div>
+    		</div>
+            </form>
+    	</div>
+ 
+
+   
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4 filters">
+            <p>Applied Filters <i class="fa fa-filter" aria-hidden="true"></i></p> 
+            <hr>
+            <button class="btn btn-danger ">Clear All</button>
+            <div class="alert alert-primary">
+                <button type="button" class="close" data-dismiss="alert"><i class="fa fa-trash"></i></button>
+                From Date: 21/3/21
+            </div>
+            <div class="alert alert-primary">
+                <button type="button" class="close" data-dismiss="alert"><i class="fa fa-trash"></i></button>
+                Type: Car
+            </div>
+        </div>
+        <div class="col-md-8 table">
+            <table class="table table-hover table-responsive-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Vehicle Number</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">Color</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Video Link</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>MH01AW1233</td>
+                    <td>Car</td>
+                    <td>Alto</td>
+                    <td>Orange</td>
+                    <td>21/3/21</td>
+                    <td>21:02:02</td>
+                    <td><a href="">Video1</a></td>
+                  </tr>
+                  <tr>
+                    <td>MH01AW1233</td>
+                    <td>Car</td>
+                    <td>Alto</td>
+                    <td>Orange</td>
+                    <td>21/3/21</td>
+                    <td>21:02:02</td>
+                    <td><a href="">Video1</a></td>
+                  </tr>
+                  <tr>
+                    <td>MH01AW1233</td>
+                    <td>Car</td>
+                    <td>Alto</td>
+                    <td>Orange</td>
+                    <td>21/3/21</td>
+                    <td>21:02:02</td>
+                    <td><a href="">Video1</a></td>
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+    </div>
+</div>
+    
+    
+    <!-- Javascript files-->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+
+
+      <script src="js/jquery-3.0.0.min.js"></script>
+      <script src="js/plugin.js"></script>
+      <!-- sidebar -->
+      <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+      <script src="js/custom.js"></script>
+</body>
+</html>
+
+
+
