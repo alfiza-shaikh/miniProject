@@ -1,30 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+<title>History</title>
 <head>
 <!-- basic -->
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.4.2/dist/css/uikit.min.css">
 <!-- mobile metas -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="initial-scale=1, maximum-scale=1">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- <meta name="viewport" content="initial-scale=1, maximum-scale=1"> -->
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <!-- site metas -->
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.4.2/dist/css/uikit.min.css">
-
-<title>LNPR</title>
-<meta name="keywords" content="">
+<!-- <meta name="keywords" content="">
 <meta name="description" content="">
-<meta name="author" content="">	
+<meta name="author" content="">	 -->
 <!-- bootstrap css -->
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='home/css/bootstrap.min.css')}}">
 <!-- style css -->
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='home/css/style.css')}}">
 <!-- Responsive-->
-<link rel="stylesheet" href="{{url_for('static', filename='home/css/responsive.css')}}">
+<!-- <link rel="stylesheet" href="{{url_for('static', filename='home/css/responsive.css')}}"> -->
 <!-- Scrollbar Custom CSS -->
-<link rel="stylesheet" href="{{url_for('static', filename='home/css/jquery.mCustomScrollbar.min.css')}}">
+<!-- <link rel="stylesheet" href="{{url_for('static', filename='home/css/jquery.mCustomScrollbar.min.css')}}"> -->
 <!-- Tweaks for older IEs-->
 <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
@@ -39,21 +37,21 @@
    }
    
    .uk-timeline .uk-timeline-item::before {
-       background: #e5e9ee;
+       background: #eff0f1;
        content: "";
        height: 100%;
        left: 10px;
        position: absolute;
        top: 20px;
        width: 2px;
-      z-index: -1;
+      z-index: 0;
    }
    
    .uk-timeline .uk-timeline-item .uk-timeline-icon .uk-badge {
       margin-top: 20px;
        width: 25px;
        height: 25px;
-       background-color: darkcyan;
+       background-color: #eff0f1;
    }
    
    .uk-timeline .uk-timeline-item .uk-timeline-content {
@@ -87,11 +85,12 @@
    
     
    .button-rename
-    {background-color: rgb(0, 116, 35);}
+    {background-color: rgb(255, 230, 0);
+    color: black;}
    
     
    .button-upload
-    {background-color: rgb(148, 202, 48);}
+    {background-color: rgb(138, 207, 8);}
    
     .alignleft {
       float: left;
@@ -102,7 +101,9 @@
    }
    
    .content{
-       font-size: 18px;
+       font-size: 17px;
+       font-family:'sans-serif';
+       font-weight:100;
    }
    
    .h5{
@@ -155,6 +156,8 @@
          <!-- end header inner -->
 	</header>
     <!-- banner end -->    
+    <br>
+    <br>
     <br>
 <h2 align="center"> History </h2>
     <div class="container-fluid" align="center">
@@ -307,7 +310,7 @@
         </div>
     </div>
 </div>
-    <!-- Javascript files-->
+    <!-- Javascript files
     <script src="js/jquery.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
@@ -315,9 +318,9 @@
 
       <script src="js/jquery-3.0.0.min.js"></script>
       <script src="js/plugin.js"></script>
-      <!-- sidebar -->
+       sidebar 
       <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
-      <script src="js/custom.js"></script>
+      <script src="js/custom.js"></script> -->
 </body>
 </html>
 

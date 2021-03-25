@@ -129,7 +129,7 @@
     	    <div class="row">
     		    <div class="col-sm-4">
     			    <div class="power">
-    				    <div class="icon"><a href="#"><img src="{{url_for('static', filename='home/images/manage_videos.png')}}" height="100px"></a></div>
+    				    <div class="icon"><a href="{{url_for('uploads')}}"><img src="{{url_for('static', filename='home/images/manage_videos.png')}}" height="100px"></a></div>
     				    <h2 class="totaly_text">Manage Your Videos</h2>
     				    <!-- <p class="making">making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still </p> -->
     			    </div>
@@ -139,7 +139,7 @@
     		    </div>
     		    <div class="col-sm-4">
     			    <div class="power">
-    				    <div class="icon"><a href="#"><img src="{{url_for('static', filename='home/images/detect-license.png')}}"></a></div>
+    				    <div class="icon"><a href="{{url_for('detected_vehicles')}}"><img src="{{url_for('static', filename='home/images/detect-license.png')}}"></a></div>
     				    <h2 class="totaly_text">Detect Vehicle's License Plate</h2>
     				    <!-- <p class="making">making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still </p> -->
     			    </div>
@@ -149,7 +149,7 @@
     		    </div>
     		    <div class="col-sm-4">
     			    <div class="power">
-    				    <div class="icon"><a href="#"><img src="{{url_for('static', filename='home/images/keep-track.png')}}"></a></div>
+    				    <div class="icon"><a href="{{url_for('history')}}"><img src="{{url_for('static', filename='home/images/keep-track.png')}}"></a></div>
     				    <h2 class="totaly_text">Keep track of uploads</h2>
     				    <!-- <p class="making">making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still </p> -->
     			    </div>
@@ -210,18 +210,18 @@
     </div>
     
     <!-- Javascript files-->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="{{url_for('static', filename='home/js/jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename='home/js/popper.min.js')}}"></script>
+    <script src="{{url_for('static', filename='home/js/bootstrap.bundle.min.js')}}"></script>
 
 
-      <script src="js/jquery-3.0.0.min.js"></script>
-      <script src="js/plugin.js"></script>
+      <script src="{{url_for('static', filename='home/js/jquery-3.0.0.min.js')}}"></script>
+      <script src="{{url_for('static', filename='home/js/plugin.js')}}"></script>
       <!-- sidebar -->
-      <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
-      <script src="js/custom.js"></script>
+      <script src="{{url_for('static', filename='home/js/jquery.mCustomScrollbar.concat.min.jss')}}"></script>
+      <script src="{{url_for('static', filename='home/js/custom.js')}}"></script>
       <!-- javascript --> 
-      <script src="js/owl.carousel.js"></script>
+      <script src="{{url_for('static', filename='home/js/owl.carousel.js')}}"></script>
       <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
       <script>
          $(document).ready(function(){

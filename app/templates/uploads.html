@@ -25,7 +25,128 @@
 <!-- Tweaks for older IEs-->
 <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 
+
+<style>
+   .searchBar {
+        position: relative;
+    }
+   .main-section{
+      padding-top: 10px;
+   }
+    .search {
+        margin: 0px;
+        padding: 0px;
+        width: 100%;
+        outline: none;
+        height: 34px;
+        border-radius: 5px;
+        border:solid 2px #747474;
+    }
+      
+    .btn-search{
+        position: absolute;
+        top: 0;
+        right: 2px;
+        z-index: 2;
+        border: none;
+        outline: none;
+        top: 2px;
+        height: 30px;
+        cursor: pointer;
+        color: #4e4e4e;
+        background-color: white;
+    }
+    .fa-folder-plus{
+      color:#55b994;
+      font-size: 1.2em;
+      border: solid 2px #55b994;
+      padding:5px;
+      border-radius: 2px;
+      box-shadow: 2px 2px 5px #d6d6d6;
+      cursor: pointer;
+    }
+    .hidden{
+       display: none;
+    }
+    .openFolder{
+       background-color: #55b994;
+       color:white;
+    }
+    .col-md-6{
+       border-left: solid 1px #757575;
+       border-right: solid 1px #757575;
+    }
+    .list-group-flush .list-group-item:first-child {
+      border-top: 0; 
+      margin-top: 10px;
+   }
+  .list-group-item:hover{
+     background-color:#74e9be ;
+     cursor: pointer;
+  }
+.media div{
+   padding:5px;
+}
+
+.fa-check-square,.fa-minus-square-o,.fa-edit{
+   font-size: 1.5em;
+   color:#24815f;
+   padding:5px;
+   cursor:pointer;
+}
+.deleteAll{
+   font-size: 1.5em;
+   color:#ff0800;
+   padding:5px;
+   cursor:pointer;
+}
+.fa-trash{
+   font-size: 1.5em;
+   cursor:pointer;
+}
+
+#float{
+	position:fixed;
+	width:40px;
+	height:40px;
+	bottom:20px;
+	right:20px;
+	background-color:#55b994;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px #999;
+   outline:none;
+   cursor: pointer;
+}
+
+.my-float{
+   color:#ffffff;
+   font-size: 16px;
+	margin-top:15px;
+}
+.col-md-3,.col-md-6{
+   animation:transition 1s;
+}
+@keyframes transition{
+   from{
+      opacity:0;
+      transform: scaleX(1.1);
+
+   }
+   to{
+      opacity:1;
+      transform: scaleX(1);
+   }
+}
+
+</style>
 </head>
 <body>
 	<header id="home"class="section">
@@ -72,35 +193,230 @@
          <!-- end header inner -->
 	</header>
     <!-- banner end -->    
-
-
+   
+<!-- Main Content Div -->
    <div class="container-fluid">
-      <div class="row">
+      <div class="row main-section">
+         <!-- First Column: Folders List -->
          <div class="col-12 col-md-3">
-            Hello
+            <div class="row">
+               <div class="col-10">
+                  <div class="searchBar">
+                     <input type="text" class="search" placeholder="Enter Folder Name">
+                     <button class="btn-search"><i class="fa fa-search" aria-hidden="true"></i></button>
+                 </div>
+               </div>
+               <div class="col-2">
+                  <i class="fas fa-folder-plus"></i>
+                 </div>
+            </div>
+            <div class="folders-display">
+               <ul id="ulist" class="list-group list-group-flush">
+ 
+                  <li class="list-group-item folder-item">
+                     <div class="folder-name">
+                        <i class="fas fa-folder"></i> Camera 1
+                         <div class="pull-right action-buttons">
+                           <a><span class="fa fa-trash"></span></a>
+                         </div>  
+                     </div>
+                  </li>
+                  <li class="list-group-item folder-item">
+                     <div class="folder-name">
+                        <i class="fas fa-folder"></i> Camera 2
+                         <div class="pull-right action-buttons">
+                           <a><span class="fa fa-trash"></span></a>
+                         </div>  
+                     </div>
+                  </li>
+                  <li class="list-group-item folder-item">
+                     <div class="folder-name">
+                        <i class="fas fa-folder"></i> Camera 3
+                         <div class="pull-right action-buttons">
+                           <a><span class="fa fa-trash"></span></a>
+                         </div>  
+                     </div>
+                  </li>
+ 
+               </ul>
+            </div>
          </div>
-         <div class="col-8 col-md-6">
-            Hii
+
+         <!-- Second Column: Video Display and Search -->
+         <div class="col-sm-8 col-md-6 " id="videosList" style="display: none;">
+            <div class="row">
+               <div class="col-2">
+                  <i class="fa fa-check-square check-uncheck-all"></i>
+                  <!-- <i class="fa fa-minus-square-o"></i> -->
+                  <i class="fa fa-trash deleteAll"></i>
+               </div>
+               <div class="col-5">
+                  <div class="searchBar">
+                     <input type="text" class="search" placeholder="Enter Video Name">
+                     <button class="btn-search"><i class="fa fa-search" aria-hidden="true"></i></button>
+                 </div>
+               </div>
+               <div class="col-5">
+                  <label>Select Date: </label>
+                  <input type="date" id="fromdate" name="fromdate">
+
+               </div>
+            </div>
+            <a class="btn btn-primary" href="{{url_for('detected_vehicles')}}">Show Detected Vehicles</a>
+
+            <ul class="list-group list-group-flush">
+
+               <li class="list-group-item">
+                 <div class="media">
+                    <div class="checkbox pull-left">
+                          <input type="checkbox" value="">				
+                    </div>
+                    <div class="pull-left">
+                       <img class="media-object" width="100" height="70" src="{{url_for('static', filename='images/detection1.jpg')}}" alt="Image">
+                    </div>
+                    <div class="media-body">
+                       <h3 class="media-heading">Video1</h3>
+                       <span style="font-size: 1.2em;">This video contains vehicles from SV Road</span>
+                    </div>
+                    <span class="label label-danger pull-right">21/03/2021 12:40 PM</span>
+                 </div>					      
+               </li>  
+               <li class="list-group-item">
+                  <div class="media">
+                     <div class="checkbox pull-left">
+                           <input type="checkbox" value="">				
+                     </div>
+                     <div class="pull-left">
+                        <img class="media-object" src="http://placehold.it/100x70" alt="Image">
+                     </div>
+                     <div class="media-body">
+                        <h3 class="media-heading">Video1</h3>
+                        <span style="font-size: 1.2em;">This video contains vehicles from SV Road</span>
+                     </div>
+                     <span class="label label-danger pull-right">21/03/2021 12:40 PM</span>
+                  </div>					      
+                </li>  
+            </ul>
          </div>
-         <div class="col-4 col-md-3">
-            Video Display
+
+
+         <!-- Third Column: Video Display -->
+         <div class="col-sm-4 col-md-3" id="videoDisplay" style="display: none;">
+            <h3>Video1</h3>
+            <i class="fa fa-edit"></i>
+            <i class="fa fa-trash deleteAll"></i>
+            <video width="95%" controls poster="https://placeimg.com/525/300/nature">
+
+               <source src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">
+               
+               </video>
+             <p align="justify">
+               This video contains vehicles from 
+               Lorem ipsum, or lipsum as it is sometimes 
+               known, is dummy text used in laying out 
+               , graphic or web designs. The passage is 
+               attributed to an unknown typesetter in the 
+               15th century who is thought to have 
+               scrambled parts of Cicero's.
+             </p>
          </div>
 
       </div>
    </div>
+   
+   <a id="float"  data-toggle="modal" data-target="#addVideoModal" style="display: none;">
+      <i class="fa fa-plus my-float"></i>
+   </a>
+   
 
-    
-    <!-- Javascript files-->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
+   <div class="modal fade" id="addVideoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Upload Video</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+             <form>
+               <div class="file-upload-wrapper">
+                  <input type="file" id="input-file-now" class="file-upload" />
+               </div>
+               <div class="form-group">
+                  <label>Video Name</label>
+                  <input type="text" placeholder="Video1" class="form-control">
+               </div>
+               <div class="form-group">
+                  <label>Comment</label>
+                  <textarea rows="6" class="form-control"></textarea>
+               </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Save Video</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            
+          </div>
+        </div>
+      </div>
+    </div>
 
+   
+   <script type="text/javascript">
+      $(document).ready(function(){
+         $('.action-buttons').addClass("hidden");
+         $('.folder-item').click(function() {
+            var delBtn = $(this).children(".folder-name").children(".action-buttons");
+            //change color of opened folder
+            $('.folder-item').removeClass("openFolder");
+            $(this).addClass("openFolder");
+            //hide/show delete buttons
+            $(".folder-name").children(".action-buttons").addClass("hidden");
+            if (delBtn.hasClass("hidden")) {
+               delBtn.removeClass("hidden");
+            } else {
+               delBtn.addClass("hidden");
+            }
+            //open folder icon
+            $('.list-group-item').children(".folder-name").children(".fas").removeClass('fa-folder-open').addClass('fa-folder')
+            $(this).children(".folder-name").children(".fas").removeClass('fa-folder').addClass('fa-folder-open')
+         });     
+         
+      });
 
-      <script src="js/jquery-3.0.0.min.js"></script>
-      <script src="js/plugin.js"></script>
-      <!-- sidebar -->
-      <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
-      <script src="js/custom.js"></script>
+      $('.check-uncheck-all').click(function() {
+         if( $(this).hasClass('fa-check-square')){
+            $(this).removeClass('fa-check-square').addClass('fa-minus-square-o');
+            $('input:checkbox').prop('checked',true);
+         }
+         else if($(this).hasClass('fa-minus-square-o')){
+            $(this).removeClass('fa-minus-square-o').addClass('fa-check-square');
+            $('input:checkbox').prop('checked', false);
+         } 
+         });
+      
+         $('input:checkbox').click(function() {
+         if ($('input[type="checkbox"]:checked').length === 0) {
+            $('.check-uncheck-all').removeClass('fa-minus-square-o').addClass('fa-check-square');
+         } 
+         else {
+            $('.check-uncheck-all').removeClass('fa-check-square').addClass('fa-minus-square-o');
+            console.log('All checkboxes are checked');
+         } 
+      });
+      
+      $(".folder-item").click(function(){
+         $("#videosList").show()
+         $("#float").show()
+      });
+
+      $(".media").click(function(){
+         $("#videoDisplay").show()
+         
+      });
+
+   </script>
 </body>
 </html>
 
