@@ -26,6 +26,7 @@
 <!-- Tweaks for older IEs-->
 <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+
 <style>
    .uk-timeline .uk-timeline-item .uk-card {
       max-height: 300px;
@@ -89,7 +90,7 @@
     color: black;}
    
     
-   .button-upload
+   .button-upload,.button-create
     {background-color: rgb(138, 207, 8);}
    
     .alignleft {
@@ -189,64 +190,50 @@
         </form>
     </div>
 
-
-<!-- <div class="uk-container uk-padding">
-    <div class="uk-timeline">
-        <div class="uk-timeline-item">
-            <div class="uk-timeline-icon">
-                <span class="uk-badge"><span uk-icon="check"></span></span>
-            </div>
-            <div class="uk-timeline-content">
-                <div class="uk-card uk-card-default uk-margin-medium-bottom uk-overflow-auto">
-                    <div class="uk-card-header">
-                        <div class="uk-grid-small uk-flex-middle" uk-grid>
-                            <h7 class="uk-card-title"></h7>
-                                    <p class="alignleft"><button class="button button-delete"><i class="fa fa-trash-o" style="font-size:20px"></i> Delete </button>
-                                    <p class="alignright"><time datetime="2020-07-08">July 8</time></p>
-                            
-                                
-                        <div class="a"><time datetime="2020-07-08">July 8</time></div>
-                        
-                        </div>
-                    </div>
-                    <div class="uk-card-body">
-						<p class="content">Video 5 deleted
-                           
-                        </p>
-                        
-                    </div>
+    {% if history %}
+    <div class="uk-container uk-padding">
+        <div class="uk-timeline">
+            {% for date,actions in history.items() %}
+            <div class="uk-timeline-item">
+                <div class="uk-timeline-icon">
+                    <span class="uk-badge"><span uk-icon="check"></span>
                 </div>
-            </div>
-        </div> -->
-        <div class="uk-container uk-padding">
-            <div class="uk-timeline">
-                <div class="uk-timeline-item">
-                    <div class="uk-timeline-icon">
-                        <span class="uk-badge"><span uk-icon="check"></span></span>
-                    </div>
-                    <div class="uk-timeline-content">
-                        <div class="uk-card uk-card-default uk-margin-medium-bottom uk-overflow-auto">
-                            <div class="uk-card-header">
-                                <div class="uk-grid-small uk-flex-middle" uk-grid>
-                                    <p class="content"><time datetime="2020-07-08">16/04/2020</time></p>
-                                   <button class="button button-delete"><i class="fa fa-trash-o" style="font-size:15px"></i> Delete </button>
-                                    <!-- <span class="uk-label uk-label-success uk-margin-auto-left">Feature</span> -->
-                                </div>
+                <div class="uk-timeline-content">
+                    <div class="uk-card uk-card-default uk-margin-medium-bottom uk-overflow-auto">
+                        <div class="uk-card-header">
+                            <div class="uk-grid-small uk-flex-middle" uk-grid>
+                                <p class="content"><time datetime="2020-07-08">{{date}}</time></p>
                             </div>
-                            <div class="uk-card-body">
-                                       <ul><li> <p class="content">Video 5 deleted 
-                                        <time datetime="2020-07-08" class="alignright">09:45 PM</time>
-                                       </li>
-                                       <!-- <li> <p class="content">Video 10 deleted 
-                                        <time datetime="2020-07-08" class="alignright">06:05 PM</time>
-                                       </li> -->
-                                    </ul>            
-                                </p>
-                            </div>
+                        </div>
+                        <div class="uk-card-body">
+                            <ul>
+                                {% for action in actions %}
+                                <li> <button class="button button-{{action[0].lower()}}">
+                                    <i class="
+                                    {%if action[0]=='Delete'%}
+                                    fa fa-trash-o
+                                    {%elif action[0]=='Rename'%}
+                                    fa fa-edit
+                                    {%elif action[0]=='Create'%}
+                                    fa fa-folder
+                                    {%elif action[0]=='Upload'%}
+                                    fa fa-upload
+                                    {%endif%}
+                                    
+                                    " 
+                                    style="font-size:15px"></i> {{action[0]}} </button> 
+                                    <p class="content">{{action[1]}}
+                                    <time datetime="2020-07-08" class="alignright">{{action[2]}}</time>
+                                </li>
+                                {% endfor %}
+                            </ul>            
                         </div>
                     </div>
                 </div>
-        <div class="uk-timeline-item">
+            </div>
+            {% endfor %}
+<!-- 
+         <div class="uk-timeline-item">
             <div class="uk-timeline-icon">
                 <span class="uk-badge"><span uk-icon="check"></span></span>
             </div>
@@ -256,7 +243,7 @@
                         <div class="uk-grid-small uk-flex-middle" uk-grid>
                             <p class="content"><time datetime="2020-07-07">13/04/2020</time></p>
                             <button class="button button-rename"><i class="fa fa-edit" style="font-size:20px"></i> Rename </button><button class="button button-delete"><i class="fa fa-trash-o" style="font-size:20px"></i> Delete </button>
-                            <!-- <span class="uk-label uk-label-warning uk-margin-auto-left">Test</span> -->
+                            
                         </div>
                     </div>
                     <div class="uk-card-body">
@@ -279,17 +266,9 @@
                 <div class="uk-card uk-card-default uk-margin-medium-bottom uk-overflow-auto">
                     <div class="uk-card-header">
                         <div class="uk-grid-small uk-flex-middle" uk-grid>
-                            <!-- <h3 class="uk-card-title"><time datetime="2020-07-06">July 6</time></h3>
-                            <span class="uk-label uk-label-danger uk-margin-auto-left">Fix</span>
-                        </div>
-                    </div>
-                    <div class="uk-card-body">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
-                        </p>
-                    </div> -->
                     <p class="content"><time datetime="2020-07-07">12/04/2020</time></p>
                     <button class="button button-upload"><i class="fa fa-upload" style="font-size:20px"></i> Upload </button>
-                    <!-- <span class="uk-label uk-label-warning uk-margin-auto-left">Test</span> -->
+                    
                 </div>
             </div>
             <div class="uk-card-body">
@@ -308,8 +287,10 @@
             </div>
             <a href="#"><span class="uk-margin-small-right" uk-icon="triangle-down"></span>Load more</a>
         </div>
+    </div> -->
     </div>
-</div>
+</div> 
+{% endif %}
     <!-- Javascript files
     <script src="js/jquery.min.js"></script>
     <script src="js/popper.min.js"></script>

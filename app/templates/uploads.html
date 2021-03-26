@@ -31,122 +31,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 
+<link rel="stylesheet" href="{{url_for('static', filename='css/uploads.css')}}">
 
-<style>
-   .searchBar {
-        position: relative;
-    }
-   .main-section{
-      padding-top: 10px;
-   }
-    .search {
-        margin: 0px;
-        padding: 0px;
-        width: 100%;
-        outline: none;
-        height: 34px;
-        border-radius: 5px;
-        border:solid 2px #747474;
-    }
-      
-    .btn-search{
-        position: absolute;
-        top: 0;
-        right: 2px;
-        z-index: 2;
-        border: none;
-        outline: none;
-        top: 2px;
-        height: 30px;
-        cursor: pointer;
-        color: #4e4e4e;
-        background-color: white;
-    }
-    .fa-folder-plus{
-      color:#55b994;
-      font-size: 1.2em;
-      border: solid 2px #55b994;
-      padding:5px;
-      border-radius: 2px;
-      box-shadow: 2px 2px 5px #d6d6d6;
-      cursor: pointer;
-    }
-    .hidden{
-       display: none;
-    }
-    .openFolder{
-       background-color: #55b994;
-       color:white;
-    }
-    .col-md-6{
-       border-left: solid 1px #757575;
-       border-right: solid 1px #757575;
-    }
-    .list-group-flush .list-group-item:first-child {
-      border-top: 0; 
-      margin-top: 10px;
-   }
-  .list-group-item:hover{
-     background-color:#74e9be ;
-     cursor: pointer;
-  }
-.media div{
-   padding:5px;
-}
-
-.fa-check-square,.fa-minus-square-o,.fa-edit{
-   font-size: 1.5em;
-   color:#24815f;
-   padding:5px;
-   cursor:pointer;
-}
-.deleteAll{
-   font-size: 1.5em;
-   color:#ff0800;
-   padding:5px;
-   cursor:pointer;
-}
-.fa-trash{
-   font-size: 1.5em;
-   cursor:pointer;
-}
-
-#float{
-	position:fixed;
-	width:40px;
-	height:40px;
-	bottom:20px;
-	right:20px;
-	background-color:#55b994;
-	color:#FFF;
-	border-radius:50px;
-	text-align:center;
-	box-shadow: 2px 2px 3px #999;
-   outline:none;
-   cursor: pointer;
-}
-
-.my-float{
-   color:#ffffff;
-   font-size: 16px;
-	margin-top:15px;
-}
-.col-md-3,.col-md-6{
-   animation:transition 1s;
-}
-@keyframes transition{
-   from{
-      opacity:0;
-      transform: scaleX(1.1);
-
-   }
-   to{
-      opacity:1;
-      transform: scaleX(1);
-   }
-}
-
-</style>
 </head>
 <body>
 	<header id="home"class="section">
@@ -193,50 +79,64 @@
          <!-- end header inner -->
 	</header>
     <!-- banner end -->    
-   
+
 <!-- Main Content Div -->
    <div class="container-fluid">
+      <div class="row">
+         {% for category,message in get_flashed_messages(with_categories=true) %}
+         <div class="alert alert-{{ category }}  col-md-4">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+         </div>
+         {% endfor %}
+      </div>
       <div class="row main-section">
+         
          <!-- First Column: Folders List -->
-         <div class="col-12 col-md-3">
-            <div class="row">
-               <div class="col-10">
-                  <div class="searchBar">
-                     <input type="text" class="search" placeholder="Enter Folder Name">
-                     <button class="btn-search"><i class="fa fa-search" aria-hidden="true"></i></button>
-                 </div>
+         <div class="col-sm-4 col-md-3">
+            <form action="{{ url_for('uploads') }}" method="POST">
+               <div class="row">
+                  <div class="col-10">
+                     <div class="textbox">
+                        <input type="text" class="input" name="newFolder" placeholder="New Folder"> 
+                  </div>
+                  </div>
+                  <div class="col-2">
+                     <button class="addfolder" name="createFolder" type="submit"><i class="fas fa-folder-plus"></i></button>
+                     
+                  </div>
                </div>
-               <div class="col-2">
-                  <i class="fas fa-folder-plus"></i>
-                 </div>
+            </form>
+            <div class="row">
+               <div class="col-12">
+                  <div class="textbox">
+                     <input type="text" class="input" placeholder="Search by Folder Name">
+                     <button class="btn-search"><i class="fa fa-search" aria-hidden="true"></i></button>
+               </div>
+               </div>
             </div>
+
             <div class="folders-display">
                <ul id="ulist" class="list-group list-group-flush">
- 
+                  {% if folders%}
+                  {% for folder in folders %}
+                  
                   <li class="list-group-item folder-item">
+                     <form  method="post" action="{{ url_for('uploads') }}">
                      <div class="folder-name">
-                        <i class="fas fa-folder"></i> Camera 1
+                        <i class="fas fa-folder"></i> 
+                        <span class="folder-name-text" contenteditable="true">{{folder[0]}}</span>
                          <div class="pull-right action-buttons">
-                           <a><span class="fa fa-trash"></span></a>
+                           <button type="submit" name="deleteFolder" value="{{folder[0]}}" ><i class="fa fa-trash"></i></button>
                          </div>  
                      </div>
+                     <input type="submit" id="editFolder" name="editFolder" value="{{folder[0]}}"  style="display:none;" />
+                  </form>
                   </li>
-                  <li class="list-group-item folder-item">
-                     <div class="folder-name">
-                        <i class="fas fa-folder"></i> Camera 2
-                         <div class="pull-right action-buttons">
-                           <a><span class="fa fa-trash"></span></a>
-                         </div>  
-                     </div>
-                  </li>
-                  <li class="list-group-item folder-item">
-                     <div class="folder-name">
-                        <i class="fas fa-folder"></i> Camera 3
-                         <div class="pull-right action-buttons">
-                           <a><span class="fa fa-trash"></span></a>
-                         </div>  
-                     </div>
-                  </li>
+                  {% endfor %}
+                  {% else %}
+                  <p>No folders found</p>
+                  {% endif %}
  
                </ul>
             </div>
@@ -251,8 +151,8 @@
                   <i class="fa fa-trash deleteAll"></i>
                </div>
                <div class="col-5">
-                  <div class="searchBar">
-                     <input type="text" class="search" placeholder="Enter Video Name">
+                  <div class="textbox">
+                     <input type="text" class="input" placeholder="Enter Video Name">
                      <button class="btn-search"><i class="fa fa-search" aria-hidden="true"></i></button>
                  </div>
                </div>
@@ -301,7 +201,7 @@
 
 
          <!-- Third Column: Video Display -->
-         <div class="col-sm-4 col-md-3" id="videoDisplay" style="display: none;">
+         <div class="col-sm-12 col-md-3" id="videoDisplay" style="display: none;">
             <h3>Video1</h3>
             <i class="fa fa-edit"></i>
             <i class="fa fa-trash deleteAll"></i>
@@ -364,10 +264,14 @@
 
    
    <script type="text/javascript">
+      if ( window.history.replaceState ) {
+         window.history.replaceState( null, null, window.location.href );
+      }
+
       $(document).ready(function(){
          $('.action-buttons').addClass("hidden");
          $('.folder-item').click(function() {
-            var delBtn = $(this).children(".folder-name").children(".action-buttons");
+            var delBtn = $(this).children("form").children(".folder-name").children(".action-buttons");
             //change color of opened folder
             $('.folder-item').removeClass("openFolder");
             $(this).addClass("openFolder");
@@ -379,8 +283,8 @@
                delBtn.addClass("hidden");
             }
             //open folder icon
-            $('.list-group-item').children(".folder-name").children(".fas").removeClass('fa-folder-open').addClass('fa-folder')
-            $(this).children(".folder-name").children(".fas").removeClass('fa-folder').addClass('fa-folder-open')
+            $('.list-group-item').children("form").children(".folder-name").children(".fas").removeClass('fa-folder-open').addClass('fa-folder')
+            $(this).children("form").children(".folder-name").children(".fas").removeClass('fa-folder').addClass('fa-folder-open')
          });     
          
       });
@@ -414,6 +318,16 @@
       $(".media").click(function(){
          $("#videoDisplay").show()
          
+      });
+
+      $(".folder-name-text").keypress(function(e){
+      if(e.keyCode== 13 || e.which== 13) { //if enter key is pressed
+         e.preventDefault();
+            var newFolderName=$(this).text(); 
+            $(this).parent().append('<input type="hidden" value="'+newFolderName+'" name="newFolderName">'); 
+            console.log(newFolderName)
+            $(this).parent().siblings('input').click(); //submit the form
+         }
       });
 
    </script>
