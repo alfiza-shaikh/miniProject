@@ -24,6 +24,7 @@ def executeIDU(query):
     return result
 
 def executeSelect(query):
+    data=None
     try:
         connection = psycopg2.connect(user="postgres",
                                         password="postgres",

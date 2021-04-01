@@ -26,9 +26,11 @@ CREATE TABLE videos(
 	folder_name varchar(500) NOT NULL,
 	timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	CONSTRAINT folder_user FOREIGN KEY(folder_name, user_email) 
-		REFERENCES folders(folder_name, user_email) ON UPDATE CASCADE,
-	UNIQUE (video_name,folder_name,user_email)
+		REFERENCES folders(folder_name, user_email) ON UPDATE CASCADE ON DELETE CASCADE,
+	UNIQUE (video_name,folder_name,user_email),
+	PRIMARY KEY (video_ref)
 );
+
 CREATE TABLE vehicles(
 	vehicle_LPN VARCHAR(20) NOT NULL,
 	vehicle_type VARCHAR(50),
@@ -38,5 +40,5 @@ CREATE TABLE vehicles(
 	user_email varchar(100) NOT NULL,
 	time time,
 	CONSTRAINT video_folder_user FOREIGN KEY(video_name,folder_name, user_email) 
-		REFERENCES videos(video_name,folder_name, user_email) ON UPDATE CASCADE
+		REFERENCES videos(video_name,folder_name, user_email) ON UPDATE CASCADE ON DELETE CASCADE
 );

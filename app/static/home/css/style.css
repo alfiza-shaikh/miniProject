@@ -131,7 +131,7 @@ p {
      color: #110f0a;
 }
 
-a {
+.menu-area-main li a {
      color: #ffffff;
      text-decoration: none;
      outline: none !important;
