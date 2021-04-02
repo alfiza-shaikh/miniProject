@@ -18,6 +18,12 @@ def updateFolderDB(folderName,email,newFolderName):
     updated=executeIDU("UPDATE folders SET folder_name='"+newFolderName+"' WHERE folder_name='"+folderName+"' AND user_email='"+email+"'")
     return updated
 
+def getVideoFromRef(ref):
+    data=executeSelect("SELECT * FROM videos WHERE video_ref='"+ref+"'")
+    if data:
+        return data[0] 
+    return None
+
 def getVideosinFolder(folderName,email):
     data=executeSelect("SELECT * FROM videos WHERE user_email='"+email+"' AND folder_name='"+folderName+"'")
     if data:

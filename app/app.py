@@ -7,7 +7,9 @@ import database.uploadsdb
 import database.historydb
 import hashlib
 import os
+import time
 from decorators import login_required
+
 
 
 csrf = CSRFProtect()
@@ -159,15 +161,15 @@ def uploads():
                 if not os.path.exists(user_folder):
                     os.makedirs(user_folder)
                 # filename foldername_videoname.extension
-                filename = session['email']+'/'+openFolder+"_"+request.form['video-name']+"."+file.filename.split(".")[-1]
-                
+                # filename = session['email']+'/'+openFolder+"_"+request.form['video-name']+"."+file.filename.split(".")[-1]
+                filename = str(time.time()).replace('.', '')+"."+file.filename.split(".")[-1]
                 # Add video with given details to db and folder
                 video={ 'name':request.form['video-name'],
                         'comment':request.form['video-comment'],
                         'ref':filename}
                 videoUploaded=database.uploadsdb.uploadVideoDB(video,openFolder,session['email'])
                 if videoUploaded:
-                    file.save(os.path.join(user_folder, filename.split("/")[1]))
+                    file.save(os.path.join(user_folder, filename))
                     msg='Video '+request.form['video-name']+' uploaded in folder '+openFolder+'.'
                     database.historydb.insertHistoryDB(session['email'],'Upload',msg)
                     flash(msg,'success')
@@ -176,17 +178,34 @@ def uploads():
         
         # Delete single Video
         elif 'deleteVideo' in request.form: 
-            video=request.form['deleteVideo'].split("/")[1]
-            fname=video.split("_")[0]
-            vname=video.split("_")[1].split(".")[0]
-            deleted=database.uploadsdb.deleteVideoDB(request.form['deleteVideo'])
-            if deleted:
-                database.historydb.insertHistoryDB(session['email'],'Delete','Video '+vname+' deleted from '+fname)
-                flash('Video '+vname+' deleted from '+fname,'danger')
-                if os.path.exists(os.path.join(UPLOAD_FOLDER,request.form['deleteVideo'])):
-                    os.remove(os.path.join(UPLOAD_FOLDER,request.form['deleteVideo']))
-            else:
-                flash('Video '+vname+' cannot be deleted.','warning')
+            videoref=request.form['deleteVideo']
+            video=database.uploadsdb.getVideoFromRef(videoref)
+            if video:
+                deleted=database.uploadsdb.deleteVideoDB(videoref)
+                if deleted:
+                    database.historydb.insertHistoryDB(session['email'],'Delete','Video '+video[0]+' deleted from '+video[4])
+                    flash('Video '+video[0]+' deleted from '+video[4],'danger')
+                    user_folder=os.path.join(UPLOAD_FOLDER, session['email'])
+                    if os.path.exists(os.path.join(user_folder,videoref)):
+                        os.remove(os.path.join(user_folder,videoref))
+                else:
+                    flash('Video '+video[0]+' cannot be deleted.','warning')
+
+        # delete multiple videos
+        elif 'deleteVideos' in request.form: 
+            print(request.form.getlist('selectedVideos'))
+            for videoref in request.form.getlist('selectedVideos'):
+                video=database.uploadsdb.getVideoFromRef(videoref)
+                if video:
+                    deleted=database.uploadsdb.deleteVideoDB(videoref)
+                    if deleted:
+                        database.historydb.insertHistoryDB(session['email'],'Delete','Video '+video[0]+' deleted from '+video[4])
+                        flash('Video '+video[0]+' deleted from '+video[4],'danger')
+                        user_folder=os.path.join(UPLOAD_FOLDER, session['email'])
+                        if os.path.exists(os.path.join(user_folder,videoref)):
+                            os.remove(os.path.join(user_folder,videoref))
+                    else:
+                        flash('Video '+video[0]+' cannot be deleted.','warning')
 
     # Displaying folders and videos content
     folders=database.uploadsdb.getAllFolders(session['email'])
