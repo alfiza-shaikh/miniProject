@@ -142,6 +142,14 @@
             </div>
          </div>
 
+
+         {% if not openFolder%}
+         <!-- Second Column: Image displayed if no folders opened -->
+         <div id="main" style="width: 700px; height: 600px;">
+            <img src="../static/images/not-open-folder-2.png" style="margin:auto;width:750px;display:block;opacity:0.13;padding-top:70px;padding-left:100px;" />
+         </div>
+         {%endif%}
+
          {% if openFolder%}
          <!-- Second Column: Video Display and Search -->
          <div class="col-sm-8 col-md-6 " id="videosList">
