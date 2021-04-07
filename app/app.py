@@ -87,9 +87,61 @@ def logout():
    session.pop('email', None)
    return redirect(url_for('index'))
 
+
+
+# Functions for uploads page
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def createFolder(fname):
+    if fname!="":
+        folderAdded=database.uploadsdb.createFolderDB(fname,session['email'])
+        if folderAdded:
+            database.historydb.insertHistoryDB(session['email'],'Create','Folder '+fname+' created')
+            flash('Folder '+fname+' created.','success')
+        else:
+            flash('Folder '+fname+' already exists.','warning')
+    else:
+        flash('Folder name cannot be blank','warning')
+
+def deleteFolder(fname):
+    videosinFolder=database.uploadsdb.getVideosinFolder(fname,session['email'])
+    deleted=database.uploadsdb.deleteFolderDB(fname,session['email'])
+    if deleted:
+        database.historydb.insertHistoryDB(session['email'],'Delete','Folder '+fname+' deleted')
+        flash('Folder '+fname+' deleted.','danger')
+        user_folder=os.path.join(UPLOAD_FOLDER,session['email'])
+        if os.path.exists(user_folder):
+            for video in videosinFolder:
+                if os.path.exists(os.path.join(user_folder, video[2])):
+                    os.remove(os.path.join(user_folder, video[2]))
+    else:
+        flash('Folder '+fname+' cannot be deleted.','warning')
+
+def editFolder(fname,newfname):
+    updated=database.uploadsdb.updateFolderDB(fname,session['email'],newfname)
+    if updated:
+        database.historydb.insertHistoryDB(session['email'],'Rename','Folder '+fname+' renamed to '+newfname)
+        flash('Folder '+fname+' renamed to '+newfname+'.','success')
+    else:
+        flash('Folder '+fname+' cannot be renamed.','warning')
+
+
+def deleteVideo(videoref):
+    video=database.uploadsdb.getVideoFromRef(videoref)
+    if video:
+        deleted=database.uploadsdb.deleteVideoDB(videoref)
+        if deleted:
+            database.historydb.insertHistoryDB(session['email'],'Delete','Video '+video[0]+' deleted from '+video[4])
+            flash('Video '+video[0]+' deleted from '+video[4],'danger')
+            user_folder=os.path.join(UPLOAD_FOLDER, session['email'])
+            if os.path.exists(os.path.join(user_folder,videoref)):
+                os.remove(os.path.join(user_folder,videoref))
+        else:
+            flash('Video '+video[0]+' cannot be deleted.','warning')
+
+
 # My Uploads
 @app.route("/uploads", methods=['GET', 'POST'])
 @csrf.exempt
@@ -97,51 +149,23 @@ def allowed_file(filename):
 def uploads():
     openFolder=request.args.get('folder', default = None, type = str)
     openVideo=request.args.get('video', default = None, type = str)
-    
+    folder_search=None
+    video_search=None
     if request.method == 'POST':
         #Manage Folders
-
-        #Create Folder
+        #Create Folder            
         if 'createFolder' in request.form:
-            fname=request.form['newFolder']
-            if fname!="":
-                folderAdded=database.uploadsdb.createFolderDB(fname,session['email'])
-                if folderAdded:
-                    database.historydb.insertHistoryDB(session['email'],'Create','Folder '+fname+' created')
-                    flash('Folder '+fname+' created.','success')
-                else:
-                    flash('Folder '+fname+' already exists.','warning')
-            else:
-                flash('Folder name cannot be blank','warning')
-        
+            createFolder(request.form['newFolder'])
         #Delete Folder
         elif 'deleteFolder' in request.form:
-            fname=request.form['deleteFolder']
-            deleted=database.uploadsdb.deleteFolderDB(fname,session['email'])
-            if deleted:
-                database.historydb.insertHistoryDB(session['email'],'Delete','Folder '+fname+' deleted')
-                flash('Folder '+fname+' deleted.','danger')
-                user_folder=os.path.join(UPLOAD_FOLDER,session['email'])
-                if os.path.exists(user_folder):
-                    for filename in os.listdir(user_folder):
-                        if filename.startswith(fname+"_"):
-                            os.remove(os.path.join(user_folder, filename))
-            else:
-                flash('Folder '+fname+' cannot be deleted.','warning')
-        
+            deleteFolder(request.form['deleteFolder'])
         # Edit Folder Name
         elif 'editFolder' in request.form:
             fname=request.form['editFolder']
             newfname=request.form['newFolderName']
-            updated=database.uploadsdb.updateFolderDB(fname,session['email'],newfname)
-            if updated:
-                database.historydb.insertHistoryDB(session['email'],'Rename','Folder '+fname+' renamed to '+newfname)
-                flash('Folder '+fname+' renamed to '+newfname+'.','success')
-            else:
-                flash('Folder '+fname+' cannot be renamed.','warning')
+            editFolder(fname,newfname)
         
         # Manage Videos
-
         # Upload Video
         elif openFolder and 'uploadVideo' in request.form:    
             #Video Upload
@@ -175,54 +199,68 @@ def uploads():
                     flash(msg,'success')
                 else:
                     flash('Video '+request.form['video-name']+' already exists.','warning')
+            else:
+                flash('Invalid file type! Allowed file type is .mp4','warning')
         
         # Delete single Video
         elif 'deleteVideo' in request.form: 
             videoref=request.form['deleteVideo']
-            video=database.uploadsdb.getVideoFromRef(videoref)
-            if video:
-                deleted=database.uploadsdb.deleteVideoDB(videoref)
-                if deleted:
-                    database.historydb.insertHistoryDB(session['email'],'Delete','Video '+video[0]+' deleted from '+video[4])
-                    flash('Video '+video[0]+' deleted from '+video[4],'danger')
-                    user_folder=os.path.join(UPLOAD_FOLDER, session['email'])
-                    if os.path.exists(os.path.join(user_folder,videoref)):
-                        os.remove(os.path.join(user_folder,videoref))
-                else:
-                    flash('Video '+video[0]+' cannot be deleted.','warning')
-
+            deleteVideo(videoref)
+            
         # delete multiple videos
         elif 'deleteVideos' in request.form: 
-            print(request.form.getlist('selectedVideos'))
+            # print(request.form.getlist('selectedVideos'))
             for videoref in request.form.getlist('selectedVideos'):
-                video=database.uploadsdb.getVideoFromRef(videoref)
-                if video:
-                    deleted=database.uploadsdb.deleteVideoDB(videoref)
-                    if deleted:
-                        database.historydb.insertHistoryDB(session['email'],'Delete','Video '+video[0]+' deleted from '+video[4])
-                        flash('Video '+video[0]+' deleted from '+video[4],'danger')
-                        user_folder=os.path.join(UPLOAD_FOLDER, session['email'])
-                        if os.path.exists(os.path.join(user_folder,videoref)):
-                            os.remove(os.path.join(user_folder,videoref))
-                    else:
-                        flash('Video '+video[0]+' cannot be deleted.','warning')
+                deleteVideo(videoref)
+        
+        elif 'editVideo' in request.form:
+            videoref=request.form['editVideo']
+            oldvideo=database.uploadsdb.getVideoFromRef(videoref)
+            new_vn=request.form['new-video-name']
+            new_vc=request.form['new-video-comment']
+            videoUpdated=database.uploadsdb.updateVideoDB(videoref,new_vn,new_vc)
+            if videoUpdated:
+                if new_vn!=oldvideo[0]:
+                    msg='Video '+oldvideo[0]+' renamed to '+new_vn+' in folder '+openFolder+'.'
+                    database.historydb.insertHistoryDB(session['email'],'Rename',msg)
+                else:
+                    msg='Video details updated'
+                flash(msg,'success')
+            else:
+                flash('Video details not updated.','warning')
+        
+        if 'searchFolder' in request.form:
+            folder_search=request.form['sfolder']
+        if 'searchVideos' in request.form:
+            video_search=request.form['svideo']
+            video_date=request.form['videodate']
+            
 
     # Displaying folders and videos content
-    folders=database.uploadsdb.getAllFolders(session['email'])
+    if folder_search:
+        folders=database.uploadsdb.searchFolderDB(folder_search,session['email'])
+    else:
+        folders=database.uploadsdb.getAllFolders(session['email'])
+
     videos=None
     if openFolder: #if any foldername is found in query
         if folders and (openFolder in [f[0] for f in folders]): # and exists in folders list
-            videos=database.uploadsdb.getVideosinFolder(openFolder,session['email']) #Display videos
-            if openVideo and videos: #if any videoname is present inquery
+            #Display videos
+            if video_search:
+                videos=database.uploadsdb.searchVideoDB(openFolder,session['email'],video_search,video_date)
+            else:
+                videos=database.uploadsdb.getVideosinFolder(openFolder,session['email']) 
+            if openVideo and videos: #if any videoname is present in query
                 openVideo=[v for v in videos if v[0]==openVideo]
                 if len(openVideo)==1: # and exists in video list of given folder
                     openVideo=openVideo[0] #Open Video
                 else:
                     openVideo=None
+            else:
+                openVideo=None
         else:
             openFolder=None
             openVideo=None
-    
 
     return render_template('uploads.html',folders=folders,openFolder=openFolder,videos=videos,openVideo=openVideo)
 
@@ -232,10 +270,13 @@ def uploads():
 
 #History
 @app.route("/history", methods=['GET', 'POST'])
+@csrf.exempt
 @login_required
 def history():
     history=database.historydb.getHistory(session['email'])
     historyData={}
+    if request.method == 'POST':
+        history=database.historydb.getHistoryFiltered(session['email'],request.form['fromdate'],request.form['todate'])
     if history:
         for h in history:
             listH=list(h)
@@ -254,45 +295,11 @@ def history():
 def detected_vehicles():
     return render_template('detected_vehicles.html')
 
+#Detect Vehicles from Image
+@app.route("/image_detect_vehicles", methods=['GET', 'POST'])
+def image_detect_vehicles():
+    return render_template('image_detect_vehicles.html')
 
-
-"""
-@app.route("/authenticate", methods=['GET', 'POST'])
-def authenticate():
-    if "login-submit" in request.form:
-        form = Login(request.form)
-        print("Login form submitted")
-        print(form.errors)
-        if request.method == 'POST':
-            email=request.form['email']
-            password=bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
-            # bcrypt.check_password_hash(pw_hash, 'hunter2') 
-            print(email,password)
-        if form.validate():
-            print('Logged in ' + email)
-        else:
-            flash('All the form fields are required. ')
-    
-        return render_template('auth.html', loginform=form,registerform=None)
-    
-    if "register-submit" in request.form:
-        form = Register(request.form)
-        print("Register form submitted")
-        print(form.errors)
-        if request.method == 'POST':
-            name=request.form['name']
-            email=request.form['email']
-            password=bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
-            confirm_password=bcrypt.generate_password_hash(request.form['confirm-password']).decode('utf-8')
-            # bcrypt.check_password_hash(pw_hash, 'hunter2') 
-            
-            # if form.validate() and password==confirm_password:
-            database.authdb.register(name,email,password)
-        
-    
-        return render_template('auth.html',loginform=None, registerform=form)
-    return render_template('auth.html',loginform=None, registerform=None)
-"""
 class Login(FlaskForm):
     email = TextField('Email:', validators=[validators.required()])
     password = PasswordField('Password:', validators=[validators.required(), validators.Length(min=3, max=35)])

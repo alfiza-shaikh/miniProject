@@ -107,14 +107,16 @@
                   </div>
                </div>
             </form>
+            <form action="{{ url_for('uploads') }}" method="POST">
             <div class="row">
                <div class="col-12">
                   <div class="textbox">
-                     <input type="text" class="input" placeholder="Search by Folder Name">
-                     <button class="btn-search"><i class="fa fa-search" aria-hidden="true"></i></button>
+                     <input type="text" class="input" name="sfolder" placeholder="Search by Folder Name">
+                     <button class="btn-search" type="submit" name="searchFolder"><i class="fa fa-search" aria-hidden="true"></i></button>
                </div>
                </div>
             </div>
+            </form>
 
             <div class="folders-display">
                {% if folders%}
@@ -153,24 +155,27 @@
          {% if openFolder%}
          <!-- Second Column: Video Display and Search -->
          <div class="col-sm-8 col-md-6 " id="videosList">
-            <form action="{{ url_for('uploads') }}" method="POST">
+            <form action="" id="search-Videos" method="POST">
+            </form>
+            <form action="{{ url_for('uploads') }}" id="del-Videos" method="POST">
             <div class="row">
-               <div class="col-2">
+               <div class="col-md-2">
                   <i class="fa fa-check-square check-uncheck-all"></i>
                   <!-- <i class="fa fa-minus-square-o"></i> -->
                   <button type="submit" name="deleteVideos" value="{{openVideo[2]}}" onClick="javascript: return confirm('Please confirm deletion. All selected videos will be deleted');"><i class="fa fa-trash deleteAll"></i></button>
                </div>
-               <div class="col-5">
-                  <div class="textbox">
-                     <input type="text" class="input" placeholder="Enter Video Name">
-                     <button class="btn-search"><i class="fa fa-search" aria-hidden="true"></i></button>
-                 </div>
+               
+               <div class="col-md-4">
+                  <input type="text"  placeholder="Enter Video Name" name="svideo" form="search-Videos">
                </div>
-               <div class="col-5">
+               <div class="col-md-4">
                   <label>Select Date: </label>
-                  <input type="date" id="fromdate" name="fromdate">
-
+                  <input type="date" id="date" name="videodate" form="search-Videos">
                </div>
+               <div class="col-md-2">
+                  <button type="submit" name="searchVideos" form="search-Videos" class="btn btn-info">Search <i class="fa fa-search" aria-hidden="true"></i></button>
+               </div>
+
             </div>
             <a class="btn btn-primary" href="{{url_for('detected_vehicles')}}">Show Detected Vehicles</a>
             {%if videos%}
@@ -198,7 +203,7 @@
                {%endfor%}
             </ul>
             {%else%}
-               <p>No videos added. </p>
+               <p>No videos found. </p>
                <p>Click on the + icon at the bottom right to add new video.</p>
             {%endif%}
             </form>
@@ -232,14 +237,11 @@
                         <textarea rows="6" class="form-control" name="video-comment" ></textarea>
                      </div>
                      <div class="modal-footer">
-                        <button type="submit"  name="uploadVideo" class="btn btn-primary">Save Video</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        
+                        <button type="submit"  name="uploadVideo" class="btn btn-success">Upload Video</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                     
                      </div>
                   </form>
-                 
-               </div>
-               
+               </div>              
             </div>
             </div>
          </div>
@@ -250,9 +252,10 @@
          {% if openVideo%}
          
             <div class="col-sm-12 col-md-3" id="videoDisplay">
-               <form action="{{ url_for('uploads') }}" method="POST">
+               <form action="{{ url_for('uploads') }}?folder={{openFolder}}" method="POST">
                   <h3>{{openVideo[0]}}</h3>
-                  <i class="fa fa-edit"></i>
+                  <button type="button" id="editVideo" data-toggle="modal" data-target="#editVideoModal"><i class="fa fa-edit"></i></button>
+                  
                   <!-- <i class="fa fa-trash deleteAll"></i> -->
                   <button type="submit" name="deleteVideo" value="{{openVideo[2]}}" onClick="javascript: return confirm('Please confirm deletion.');"><i class="fa fa-trash deleteAll"></i></button>
                   <video width="95%" controls>
@@ -263,6 +266,37 @@
                   </p>
                </form>
             </div>
+
+
+         <!-- Edit video form -->
+         <div class="modal fade" id="editVideoModal" tabindex="-1" role="dialog" aria-labelledby="editVideoModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title">Edit Video Details</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <form action="{{url_for('uploads')}}?folder={{openFolder}}" method="post">
+                     <div class="form-group">
+                        <label>Video Name *</label>
+                        <input type="text" placeholder="Video1" name="new-video-name" class="form-control" value="{{openVideo[0]}}" required>
+                     </div>
+                     <div class="form-group">
+                        <label>Comment</label>
+                        <textarea rows="6" class="form-control" name="new-video-comment" >{{openVideo[1]}}</textarea>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="submit"  name="editVideo" value="{{openVideo[2]}}" class="btn btn-success">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                     
+                     </div>
+                  </form>
+               </div>              
+            </div>
+            </div>
+         </div>
          
          {%endif%}
 

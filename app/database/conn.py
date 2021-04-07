@@ -1,6 +1,6 @@
 import psycopg2
 
-def executeIDU(query):
+def execute(query):
     result=None
     try:
         connection = psycopg2.connect(user="postgres",
@@ -10,8 +10,11 @@ def executeIDU(query):
 
         cursor = connection.cursor()
         cursor.execute(query)
-        connection.commit()
-        result=True
+        if query.startswith("SELECT"):
+            result = cursor.fetchall()
+        else:
+            connection.commit()
+            result=True
     except (Exception, psycopg2.DatabaseError) as error:
         connection.rollback()
         connection.rollback()
@@ -23,26 +26,4 @@ def executeIDU(query):
             connection.close()
     return result
 
-def executeSelect(query):
-    data=None
-    try:
-        connection = psycopg2.connect(user="postgres",
-                                        password="postgres",
-                                        host="127.0.0.1",
-                                        database="ALPR")
-
-        cursor = connection.cursor()
-        cursor.execute(query)
-        data = cursor.fetchall()
-    except (Exception, psycopg2.DatabaseError) as error:
-        connection.rollback()
-        connection.rollback()
-        print(error)
-    finally:
-        # closing database connection.
-        if connection:
-            cursor.close()
-            connection.close()
-    return data
-        
 
