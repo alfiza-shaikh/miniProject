@@ -112,7 +112,7 @@ def deleteFolder(fname):
         database.historydb.insertHistoryDB(session['email'],'Delete','Folder '+fname+' deleted')
         flash('Folder '+fname+' deleted.','danger')
         user_folder=os.path.join(UPLOAD_FOLDER,session['email'])
-        if os.path.exists(user_folder):
+        if os.path.exists(user_folder) and videosinFolder:
             for video in videosinFolder:
                 if os.path.exists(os.path.join(user_folder, video[2])):
                     os.remove(os.path.join(user_folder, video[2]))
