@@ -37,49 +37,18 @@
 <body>
 	<header id="home"class="section">
 	<div class="header_main">
-         <!-- header inner -->
-         <div class="header">
-            <div class="container">
-               <div class="row">
-                  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col logo_section">
-                     <div class="full">
-                        <div class="center-desk">
-                           <div class="logo"><a href="#home"><img src="{{url_for('static', filename='home/images/logo-empty.png')}}" style="max-width: 100%;"></a> 
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
-                     <div class="menu-area">
-                        <div class="limit-box">
-                           
-                           <nav class="main-menu">
-                              <ul class="menu-area-main">
-                                 <li><a href="{{url_for('index')}}"><i class="fa fa-car" style="font-size:22px"></i> Home</a></li>
-                                 
-                                 {% if session['email'] %}
-                                 <li><a href="{{url_for('uploads')}}" class="nav-active"><i class="fa fa-upload" style="font-size:22px"></i> My Uploads</a></li>
-                                 <li><a href="{{url_for('history')}}"><i class="fa fa-history" style="font-size:22px"></i> History</a></li>
-                                 <li><a href="{{url_for('logout')}}"><i class="fa fa-sign-out" style="font-size:22px"></i> Logout</a></li>
-                                 {% else %}
-                                 <li><a href="{{url_for('login')}}"><i class="fa fa-user" style="font-size:22px"></i> Log In</a></li>
-                                 <li><a href="{{url_for('register')}}"><i class="fa fa-user-plus" style="font-size:22px"></i> Register</a></li>
-                                 {% endif %}
-                                 
-                                 <!-- <li><a href="#feedback"><i class="fa fa-comments-o" style="font-size:22px"></i> Feedback</a></li> -->
-                              </ul>
-                           </nav>
-                        </div>
-                     </div>
-                 </div>
-               </div>
-            </div>
-         </div>
-         </div>
-         <!-- end header inner -->
+      <!-- header inner -->
+      {% set active_page = "uploads" %}
+      {% include 'header_inner.html' %}
+   
+      <!-- end header inner -->
+   </div>
 	</header>
     <!-- banner end -->    
-
+    <br>
+    <br>
+    <br>
+<h2 align="center"> My Uploads </h2>
 <!-- Main Content Div -->
    <div class="container-fluid">
       <div class="row">
@@ -123,10 +92,10 @@
                <ul id="ulist" class="list-group list-group-flush">
                   
                   {% for folder in folders %}
-                  <li class="list-group-item folder-item {%if openFolder and openFolder==folder[0]%}openFolder{%endif%}">
+                  <li title="Click icon to open folder" class="list-group-item folder-item {%if openFolder and openFolder==folder[0]%}openFolder{%endif%}">
                      <form  method="post" action="{{ url_for('uploads') }}">
                      <div class="folder-name">
-                        <a href="{{url_for('uploads')}}?folder={{folder[0]}}" title="Click icon to open folder"> <i class="fas {%if openFolder==folder[0]%}fa-folder-open{%else%}fa-folder{%endif%}"></i> </a>
+                        <a href="{{url_for('uploads')}}?folder={{folder[0]}}" > <i class="fas {%if openFolder==folder[0]%}fa-folder-open{%else%}fa-folder{%endif%}"></i> </a>
                         <span class="folder-name-text" contenteditable="true">{{folder[0]}}</span>
                          <div class="pull-right action-buttons {%if openFolder!=folder[0]%}hidden{%endif%}">
                            <button type="submit" name="deleteFolder" value="{{folder[0]}}" onClick="javascript: return confirm('Please confirm deletion.\nOn deletion of folder all the videos in the folder will be lost');" ><i class="fa fa-trash"></i></button>
@@ -162,22 +131,34 @@
                <div class="col-md-2">
                   <i class="fa fa-check-square check-uncheck-all"></i>
                   <!-- <i class="fa fa-minus-square-o"></i> -->
-                  <button type="submit" name="deleteVideos" value="{{openVideo[2]}}" onClick="javascript: return confirm('Please confirm deletion. All selected videos will be deleted');"><i class="fa fa-trash deleteAll"></i></button>
+                  <button type="submit" name="deleteVideos" value="" onClick="javascript: return confirm('Please confirm deletion. All selected videos will be deleted');"><i class="fa fa-trash deleteAll"></i></button>
                </div>
                
                <div class="col-md-4">
-                  <input type="text"  placeholder="Enter Video Name" name="svideo" form="search-Videos">
+                  <input type="text"  placeholder="Enter Video Name" name="svideo" form="search-Videos"  value="{{request.form['svideo']}}">
                </div>
                <div class="col-md-4">
                   <label>Select Date: </label>
-                  <input type="date" id="date" name="videodate" form="search-Videos">
+                  <input type="date" id="date" name="videodate" form="search-Videos" value="{{request.form['videodate']}}">
                </div>
                <div class="col-md-2">
                   <button type="submit" name="searchVideos" form="search-Videos" class="btn btn-info">Search <i class="fa fa-search" aria-hidden="true"></i></button>
                </div>
 
             </div>
-            <a class="btn btn-primary" href="{{url_for('detected_vehicles')}}">Show Detected Vehicles</a>
+            <div class="row">
+               <div class="col-lg-6">
+                  <a  class="btn primary" href=""  data-toggle="modal" data-target="#addVideoModal">
+                     Add new video <i class="fa fa-video-camera" aria-hidden="true"></i> 
+                  </a> 
+               </div>
+               <div class="col-lg-6" id="show_dv" style="display: none;">
+                  <button class="btn primary" type="submit" name="detectVehicles" value="">Show Detected Vehicles</button>
+                  <!-- <a class="btn primary" href="{{url_for('detected_vehicles')}}">Show Detected Vehicles</a> -->
+               </div>
+               
+            </div>
+            
             {%if videos%}
             <ul class="list-group list-group-flush">
                {% for video in videos %}
@@ -204,15 +185,15 @@
             </ul>
             {%else%}
                <p>No videos found. </p>
-               <p>Click on the + icon at the bottom right to add new video.</p>
+               <!-- <p>Click on the + icon at the bottom right to add new video.</p> -->
             {%endif%}
             </form>
          </div>
 
          <!-- Add video button -->
-         <a id="float"  title="Add new video" data-toggle="modal" data-target="#addVideoModal">
+         <!-- <a id="float"  title="Add new video" data-toggle="modal" data-target="#addVideoModal">
             <i class="fa fa-plus my-float"></i>
-         </a>
+         </a> -->
          <!-- Add video form -->
          <div class="modal fade" id="addVideoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -349,25 +330,31 @@
       }
       });
       
-      // Check uncheck 
+      // Check uncheck button
       $('.check-uncheck-all').click(function() {
-         if( $(this).hasClass('fa-check-square')){
-            $(this).removeClass('fa-check-square').addClass('fa-minus-square-o');
-            $('input:checkbox').prop('checked',true);
+         if( $(this).hasClass('fa-check-square')){ //unchecked
+           if( $('input:checkbox').length >0){ // if there are checkboxes
+            $(this).removeClass('fa-check-square').addClass('fa-minus-square-o'); //checked
+            $('input:checkbox').prop('checked',true); 
+            $("#show_dv").show();
+           }
+            
          }
          else if($(this).hasClass('fa-minus-square-o')){
             $(this).removeClass('fa-minus-square-o').addClass('fa-check-square');
             $('input:checkbox').prop('checked', false);
+            $("#show_dv").hide();
          } 
          });
       
          $('input:checkbox').click(function() {
          if ($('input[type="checkbox"]:checked').length === 0) {
             $('.check-uncheck-all').removeClass('fa-minus-square-o').addClass('fa-check-square');
+            $("#show_dv").hide();
          } 
          else {
             $('.check-uncheck-all').removeClass('fa-check-square').addClass('fa-minus-square-o');
-            console.log('All checkboxes are checked');
+            $("#show_dv").show();
          } 
       });
    
@@ -383,7 +370,10 @@
          }
       });
 
+
    </script>
+   {% include 'scripts.html' %}
+
 </body>
 </html>
 

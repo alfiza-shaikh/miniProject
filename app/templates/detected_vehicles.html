@@ -25,6 +25,9 @@
 <!-- Tweaks for older IEs-->
 <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 
  <style>
 
@@ -76,51 +79,22 @@ thead{
       opacity:1;
    }
 }
+div{
+    color: #008051;
+    font-weight: 500;
+    font-size: 1.01em;
+}
 </style> 
 </head>
 <body>
 	<header id="home"class="section">
 	<div class="header_main">
          <!-- header inner -->
-         <div class="header">
-            <div class="container">
-               <div class="row">
-                  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col logo_section">
-                     <div class="full">
-                        <div class="center-desk">
-                           <div class="logo"><a href="#home"><img src="{{url_for('static', filename='home/images/logo-empty.png')}}" style="max-width: 100%;"></a> 
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
-                     <div class="menu-area">
-                        <div class="limit-box">
-                           
-                           <nav class="main-menu">
-                              <ul class="menu-area-main">
-                                 <li><a href="{{url_for('index')}}"><i class="fa fa-car" style="font-size:22px"></i> Home</a></li>
-                                 
-                                 {% if session['email'] %}
-                                 <li><a href="{{url_for('uploads')}}" class="nav-active"><i class="fa fa-upload" style="font-size:22px"></i> My Uploads</a></li>
-                                 <li><a href="{{url_for('history')}}"><i class="fa fa-history" style="font-size:22px"></i> History</a></li>
-                                 <li><a href="{{url_for('logout')}}"><i class="fa fa-sign-out" style="font-size:22px"></i> Logout</a></li>
-                                 {% else %}
-                                 <li><a href="{{url_for('login')}}"><i class="fa fa-user" style="font-size:22px"></i> Log In</a></li>
-                                 <li><a href="{{url_for('register')}}"><i class="fa fa-user-plus" style="font-size:22px"></i> Register</a></li>
-                                 {% endif %}
-                                 
-                                 <!-- <li><a href="#feedback"><i class="fa fa-comments-o" style="font-size:22px"></i> Feedback</a></li> -->
-                              </ul>
-                           </nav>
-                        </div>
-                     </div>
-                 </div>
-               </div>
-            </div>
-         </div>
-         </div>
+         {% set active_page = "detected_vehicles" %}
+			 {% include 'header_inner.html' %}
+      
          <!-- end header inner -->
+         </div>
 	</header>
     <!-- banner end -->
     <br>
@@ -128,7 +102,17 @@ thead{
     <br>
 <h2 align="center"> Detected Vehicles </h2>
     	<div class="container-fluid">
-            <form action="" >
+            <form action="" method="POST">
+                {% for message in get_flashed_messages() %}
+                <div class="row">
+                    <div class="col-md-6">
+                    <div class="alert alert-danger">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        {{ message }}
+                    </div>
+                    </div>
+                </div>
+                {% endfor %}
     		<div class="row">
     			<div class="col-md-6">
                         <div class="row">
@@ -137,11 +121,11 @@ thead{
                             </div>
                             <div class=" col-5">
                                 <label>From: </label>
-                                <input type="date" id="fromdate" name="fromdate">
+                                <input type="date" id="fromdate" name="fromdate" value="{{filters['From Date']}}">
                             </div>
                             <div class="col-5">
                                 <label>To: </label>
-                                <input type="date" id="todate" name="todate">
+                                <input type="date" id="todate" name="todate" value="{{filters['To Date']}}">
                             </div>
                         </div>
                         <div class="row">
@@ -150,34 +134,36 @@ thead{
                             </div>
                             <div class="col-5">
                                 <label>From: </label>
-                                <input type="time" id="fromtime" name="fromtime">
+                                <input type="time" id="fromtime" name="fromtime" value="{{filters['From Time']}}">
                             </div>
                             <div class="col-5">
                                 <label>To: </label>
-                                <input type="time" id="totime" name="totime">
+                                <input type="time" id="totime" name="totime" value="{{filters['To Time']}}">
                             </div>
                         </div>
     			</div>
     			<div class="col-md-6">
     				<div class="row">
                         <div class="col-4">
-                            <input type="text" placeholder="Enter vehicle number" name="vehiclenumber">
+                            <input type="text" placeholder="Enter vehicle number" name="vehiclenumber" value="{{filters['Vehicle Number']}}">
                         </div>
                         <div class="col-4">
                             <select name="vehicles" id="vehicles">
                                 <option value="">Select Vehicle Type</option>
+                                <option value="ambulance" >Ambulance</option>
+                                <option value="bus">Bus</option>
                                 <option value="car">Car</option>
-                                <option value="scooter">Scooter</option>
+                                <option value="motorcycle">Motorcycle</option>
                                 <option value="truck">Truck</option>
                               </select>
                             </div>
                         <div class="col-4">
-                            <input type="text" placeholder="Enter color" name="color">
+                            <input type="text" placeholder="Enter color" name="color" value="{{filters['Color']}}">
                         </div>
                     </div>
                     <div class="row">
                         <div class="offset-8 col-4">
-                        <button type="submit" class="btn btn-success btn-search"><a href="">Apply</a></button>   
+                        <button type="submit" name="filters" value="{{filters}}" class="btn btn-success btn-search">Apply</button>   
                         </div>
                     </div>
     			</div>
@@ -193,14 +179,15 @@ thead{
             <p>Applied Filters <i class="fa fa-filter" aria-hidden="true"></i></p> 
             <hr>
             <button class="btn btn-danger ">Clear All</button>
+            {% for filter in filters %}
+            {%if filters[filter] !=""%}
             <div class="alert alert-primary">
                 <button type="button" class="close" data-dismiss="alert"><i class="fa fa-trash"></i></button>
-                From Date: 21/3/21
+                {{filter}}: {{filters[filter]}}
             </div>
-            <div class="alert alert-primary">
-                <button type="button" class="close" data-dismiss="alert"><i class="fa fa-trash"></i></button>
-                Type: Car
-            </div>
+            {%endif%}
+            {% endfor %}
+
         </div>
         <div class="col-md-8 table">
             <table class="table table-hover table-responsive-sm">
@@ -208,7 +195,6 @@ thead{
                   <tr>
                     <th scope="col">Vehicle Number</th>
                     <th scope="col">Type</th>
-                    <th scope="col">Model</th>
                     <th scope="col">Color</th>
                     <th scope="col">Date</th>
                     <th scope="col">Time</th>
@@ -219,7 +205,6 @@ thead{
                   <tr>
                     <td>MH01AW1233</td>
                     <td>Car</td>
-                    <td>Alto</td>
                     <td>Orange</td>
                     <td>21/3/21</td>
                     <td>21:02:02</td>
@@ -228,7 +213,6 @@ thead{
                   <tr>
                     <td>MH01AW1233</td>
                     <td>Car</td>
-                    <td>Alto</td>
                     <td>Orange</td>
                     <td>21/3/21</td>
                     <td>21:02:02</td>
@@ -237,7 +221,6 @@ thead{
                   <tr>
                     <td>MH01AW1233</td>
                     <td>Car</td>
-                    <td>Alto</td>
                     <td>Orange</td>
                     <td>21/3/21</td>
                     <td>21:02:02</td>
@@ -249,18 +232,7 @@ thead{
     </div>
 </div>
     
-    
-    <!-- Javascript files-->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
 
-
-      <script src="js/jquery-3.0.0.min.js"></script>
-      <script src="js/plugin.js"></script>
-      <!-- sidebar -->
-      <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
-      <script src="js/custom.js"></script>
 </body>
 </html>
 

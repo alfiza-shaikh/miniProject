@@ -50,7 +50,10 @@ def updateVideoDB(video_ref,video_name,video_comment):
     return updated
 
 def searchVideoDB(folderName,email,vname,vdate):
-    query="SELECT * FROM videos WHERE user_email='"+email+"'AND folder_name='"+folderName+"' AND video_name iLIKE '%"+vname+"%'"
+    query="SELECT * FROM videos WHERE user_email='"+email+"'AND folder_name='"+folderName+"'"
+    print(vdate)
+    if vname:
+        query+=" AND video_name iLIKE '%"+vname+"%'"
     if vdate:
         query+=" AND timestamp::date='"+vdate+"'"
         

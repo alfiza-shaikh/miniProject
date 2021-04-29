@@ -12,7 +12,7 @@
     <meta name="keywords" content="">
     <meta name="description" content="">
     <meta name="author" content="">
-
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='home/css/bootstrap.min.css')}}">
 	<!-- style css -->
 	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='home/css/style.css')}}">
@@ -23,7 +23,7 @@
 	<!-- Tweaks for older IEs-->
 	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
     <!-- Bootstrap CSS -->
-    <link href="{{url_for('static',filename='css/bootstrap.min.css')}}" rel="stylesheet">
+    <!-- <link href="{{url_for('static',filename='css/bootstrap.min.css')}}" rel="stylesheet"> -->
 	<!-- Site CSS -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
 	<!-- Fontawesome CSS -->
@@ -31,11 +31,8 @@
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/responsive.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='css/login-register.css')}}">
+	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
 
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
 	<style>
 		body{
 		background-color: #f2faf7 ;
@@ -47,81 +44,67 @@
 	<header id="home"class="section">
 		<div class="header_main">
 			 <!-- header inner -->
-			 <div class="header">
-				<div class="container">
-				   <div class="row">
-					  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col logo_section">
-						 <div class="full">
-							<div class="center-desk">
-							   <div class="logo"><a href="#home"><img src="{{url_for('static', filename='home/images/logo-empty.png')}}" style="max-width: 100%;"></a> 
-							   </div>
-							</div>
-						 </div>
-					  </div>
-					  <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
-						 <div class="menu-area">
-							<div class="limit-box">
-							   
-							   <nav class="main-menu">
-								  <ul class="menu-area-main">
-									 <li><a href="{{url_for('index')}}"><i class="fa fa-car" style="font-size:22px"></i> Home</a></li>
-									 
-									 {% if session['email'] %}
-									 <li><a href="{{url_for('uploads')}}"><i class="fa fa-upload" style="font-size:22px"></i> My Uploads</a></li>
-									 <li><a href="{{url_for('history')}}"><i class="fa fa-history" style="font-size:22px"></i> History</a></li>
-									 <li><a href="{{url_for('logout')}}"><i class="fa fa-sign-out" style="font-size:22px"></i> Logout</a></li>
-									 {% else %}
-									 <li><a href="{{url_for('login')}}"  class="nav-active"><i class="fa fa-user" style="font-size:22px"></i> Log In</a></li>
-									 <li><a href="{{url_for('register')}}"><i class="fa fa-user-plus" style="font-size:22px"></i> Register</a></li>
-									 {% endif %}
-									 
-									 <!-- <li><a href="#feedback"><i class="fa fa-comments-o" style="font-size:22px"></i> Feedback</a></li> -->
-								  </ul>
-							   </nav>
-							</div>
-						 </div>
-					 </div>
-				   </div>
-				</div>
-			 </div>
-			 </div>
+			 {% set active_page = "login" %}
+			 {% include 'header_inner.html' %}
 			 <!-- end header inner -->
-		</header>
+		</div>
+	</header>
 <div  class="main-form-box">
 	
 	<div class="md-form">
+		<div class="container">
+			{%if request.args.get('next', '')%}
+			<div class="alert alert-warning col-md-6 offset-md-3">
+				Please Login to continue!
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+			</div>
+			{%endif%}
+			{% for category,message in get_flashed_messages(with_categories=true) %}
+			{%if category=="registered"%}
+			<div class="alert alert-success col-md-6 offset-md-3">
+				{{ message }}
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+			</div>
+			{%endif%}
+			{% endfor %}
+		</div>
 		<div class="container">
 			<div class="row">
 				<div class="col-md-6 offset-md-3">
 					<div class="panel panel-login">
 						<div class="panel-heading">
 							<div class="row">
-								<div class="col-lg-6 col-sm-6 col-xl-6">
+								<div class="col-lg-12" >
+									<span id="login-form-link">Login</span>
+								</div>
+								<!-- <div class="col-lg-6 col-sm-6 col-xl-6">
 									<a href="{{url_for('login')}}" class="active"  id="login-form-link">Login</a>
 								</div>
 								<div class="col-lg-6 col-sm-6 col-xl-6">
 									<a href="{{url_for('register')}}" id="register-form-link">Register</a>
 								</div>
-								<!-- <div class="or">OR</div> -->
+								 <div class="or">OR</div>  -->
 							</div>
 						</div>
 						<div class="panel-body">
 							<div class="row">
 								<div class="col-lg-12">
 			
-										{% for message in get_flashed_messages() %}
-										<div class="alert alert-warning">
-											<button type="button" class="close" data-dismiss="alert">&times;</button>
-											{{ message }}
-										</div>
-										{% endfor %}
+									{% for category,message in get_flashed_messages(with_categories=true) %}
+									{%if category!="registered"%}
+									<div class="alert alert-warning ">
+										{{ message }}
+										<button type="button" class="close" data-dismiss="alert">&times;</button>
+									</div>
+									{%endif%}
+									{% endfor %}
 									
 
 									<form id="login-form" action="" method="post" role="form" style="display: block;">
 										<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 										<div class="form-group">
 											<label class="icon-lp"><i class="fas fa-envelope"></i></label>
-											<input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address" value="" required="">
+											{{ loginform.email(class="form-control", placeholder="Email Address") }}
 											{% if loginform %}
 											{% for errors in loginform.email.errors %}
 												<p class="form-text text-danger">
@@ -132,7 +115,7 @@
 										</div>
 										<div class="form-group">
 											<label class="icon-lp"><i class="fas fa-key"></i></label>
-											<input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password" required="">
+											{{ loginform.password(class="form-control", placeholder="Password") }}
 											{% if loginform %}
 											{% for errors in loginform.password.errors %}
 												<p class="form-text text-danger ">
@@ -147,7 +130,11 @@
 												Remember Me
 											</label>
 										</div>
-
+										<input
+											type="hidden"
+											name="next"
+											value="{{ request.args.get('next', '') }}"
+										/>
 										<div class="form-group">
 											<div class="row">
 												<div class="col-sm-6 offset-sm-3">
@@ -181,8 +168,7 @@
 </div>
 
 
-<script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
-<script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+{% include 'scripts.html' %}
 
 </body>
 </html>

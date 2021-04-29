@@ -40,45 +40,12 @@
 </head>
 <body>
 	<header id="home"class="section">
+      
 	<div class="header_main">
          <!-- header inner -->
-         <div class="header">
-            <div class="container">
-               <div class="row">
-                  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col logo_section">
-                     <div class="full">
-                        <div class="center-desk">
-                           <div class="logo"><a href="#home"><img src="{{url_for('static', filename='home/images/logo-empty.png')}}" style="max-width: 100%;"></a> 
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
-                     <div class="menu-area">
-                        <div class="limit-box">
-                           
-                           <nav class="main-menu">
-                              <ul class="menu-area-main">
-                                 <li><a href="{{url_for('index')}}" class="nav-active"><i class="fa fa-car" style="font-size:22px"></i> Home</a></li>
-                                 
-                                 {% if session['email'] %}
-                                 <li><a href="{{url_for('uploads')}}"><i class="fa fa-upload" style="font-size:22px"></i> My Uploads</a></li>
-                                 <li><a href="{{url_for('history')}}"><i class="fa fa-history" style="font-size:22px"></i> History</a></li>
-                                 <li><a href="{{url_for('logout')}}"><i class="fa fa-sign-out" style="font-size:22px"></i> Logout</a></li>
-                                 {% else %}
-                                 <li><a href="{{url_for('login')}}"><i class="fa fa-user" style="font-size:22px"></i> Log In</a></li>
-                                 <li><a href="{{url_for('register')}}"><i class="fa fa-user-plus" style="font-size:22px"></i> Register</a></li>
-                                 {% endif %}
-                                 
-                                 <!-- <li><a href="#feedback"><i class="fa fa-comments-o" style="font-size:22px"></i> Feedback</a></li> -->
-                              </ul>
-                           </nav>
-                        </div>
-                     </div>
-                 </div>
-               </div>
-            </div>
-         </div>
+         {% set active_page = "index" %}
+			 {% include 'header_inner.html' %}
+      
          <!-- end header inner -->
       <section >
       	<div class="bannen_inner">
@@ -110,9 +77,9 @@
             </div>            -->
         </div>
        </div>
-     </div>
+   </section>
     </div>
-    </section>
+    
 	</header>
     <!-- banner end -->
     <!-- choose start -->
@@ -218,10 +185,10 @@
       <script src="{{url_for('static', filename='home/js/jquery-3.0.0.min.js')}}"></script>
       <script src="{{url_for('static', filename='home/js/plugin.js')}}"></script>
       <!-- sidebar -->
-      <script src="{{url_for('static', filename='home/js/jquery.mCustomScrollbar.concat.min.jss')}}"></script>
+      <script src="{{url_for('static', filename='home/js/jquery.mCustomScrollbar.concat.min.js')}}"></script>
       <script src="{{url_for('static', filename='home/js/custom.js')}}"></script>
       <!-- javascript --> 
-      <script src="{{url_for('static', filename='home/js/owl.carousel.js')}}"></script>
+      <!-- <script src="{{url_for('static', filename='home/js/owl.carousel.js')}}"></script> -->
       <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
       <script>
          $(document).ready(function(){

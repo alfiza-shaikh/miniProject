@@ -8,6 +8,7 @@ import database.historydb
 import hashlib
 import os
 import time
+import datetime
 from decorators import login_required
 
 
@@ -32,34 +33,40 @@ def index():
 #Login
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    form = Login(request.form)
     if "email" not in session:
         if "login-submit" in request.form:
-            form = Login(request.form)
+            
             
             if request.method == 'POST':
                 email=request.form['email']
                 password=hashlib.md5(request.form['password'].encode()).hexdigest()
+                next_url = request.form.get("next")
                 print(email,password)
             if form.validate_on_submit():
                 print(form.errors)
-                email_id=database.authdb.login(email,password)
-                if email_id:
-                    session['email']=email_id  
-                    print('Logged in ' + email)
+                user=database.authdb.login(email,password)
+                if user:
+                    session['email']=user[2]
+                    session['name']=user[1]   
+                    # print('Logged in ' + email)
+                    if next_url:
+                        return redirect(next_url)
                     return redirect(url_for('index'))
                 else:
                     flash('Incorrect email or password!')
             
             return render_template('login.html', loginform=form)
-        return render_template('login.html', loginform=None)
+        return render_template('login.html', loginform=form)
     return redirect(url_for('index'))
 
 #Register
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    form = Register(request.form)
     if "email" not in session:
         if "register-submit" in request.form:
-            form = Register(request.form)
+            
             if request.method == 'POST':
                 name=request.form['name']
                 email=request.form['email']
@@ -71,12 +78,13 @@ def register():
                     print(form.errors)
                     registered=database.authdb.register(name,email,password)
                     if registered:
+                        flash('Registration Successful. Please Login to continue','registered')
                         return redirect(url_for('login'))
                     else:
-                        flash('Email Address already registered.')
+                        flash('User already exists.')
             
             return render_template('register.html',registerform=form)
-        return render_template('register.html',registerform=None)
+        return render_template('register.html',registerform=form)
     return redirect(url_for('index'))
     
 #Logut
@@ -85,6 +93,7 @@ def register():
 def logout():
    # remove the email from the session if it is there
    session.pop('email', None)
+   session.pop('name', None)
    return redirect(url_for('index'))
 
 
@@ -228,12 +237,19 @@ def uploads():
                 flash(msg,'success')
             else:
                 flash('Video details not updated.','warning')
+        # Detect Vehicles
+        elif 'detectVehicles' in request.form:
+            for videoref in request.form.getlist('selectedVideos'):
+                print(videoref)
+            # Redirect to detected vehicles
+            # Pass videos and use POST (code = 307 tells the browser to preserve the used HTTP method )
+            return redirect(url_for('detected_vehicles',videos=request.form.getlist('selectedVideos')))
         
         if 'searchFolder' in request.form:
             folder_search=request.form['sfolder']
-        if 'searchVideos' in request.form:
-            video_search=request.form['svideo']
-            video_date=request.form['videodate']
+        # if 'searchVideos' in request.form:
+        #     video_search=request.form['svideo']
+        #     video_date=request.form['videodate']
             
 
     # Displaying folders and videos content
@@ -246,7 +262,9 @@ def uploads():
     if openFolder: #if any foldername is found in query
         if folders and (openFolder in [f[0] for f in folders]): # and exists in folders list
             #Display videos
-            if video_search:
+            if request.method == 'POST' and 'searchVideos' in request.form:
+                video_search=request.form['svideo']
+                video_date=request.form['videodate']
                 videos=database.uploadsdb.searchVideoDB(openFolder,session['email'],video_search,video_date)
             else:
                 videos=database.uploadsdb.getVideosinFolder(openFolder,session['email']) 
@@ -275,8 +293,18 @@ def uploads():
 def history():
     history=database.historydb.getHistory(session['email'])
     historyData={}
+    dates={'fromdate':'','todate':''}
     if request.method == 'POST':
-        history=database.historydb.getHistoryFiltered(session['email'],request.form['fromdate'],request.form['todate'])
+        today=datetime.date.today().strftime("%Y-%m-%d")
+        if request.form['fromdate'] and request.form['todate'] and request.form['fromdate']>request.form['todate']:
+            flash("From Date should be before or same as To Date")
+        elif (request.form['fromdate'] and request.form['fromdate']>today) or\
+        (request.form['todate'] and request.form['todate']>today):
+            flash("Date should not exceed today's date")
+        else:
+            dates['fromdate']=request.form['fromdate']
+            dates['todate']=request.form['todate']
+            history=database.historydb.getHistoryFiltered(session['email'],request.form['fromdate'],request.form['todate'])
     if history:
         for h in history:
             listH=list(h)
@@ -287,28 +315,57 @@ def history():
                 historyData[date].append(listH[:3])
             else:
                 historyData[date]=[listH[:3]]
-    return render_template('history.html',history=historyData)
+    return render_template('history.html',history=historyData,dates=dates)
 
 #Detected Vehicles
 @app.route("/detected_vehicles", methods=['GET', 'POST'])
+@csrf.exempt
 @login_required
 def detected_vehicles():
-    return render_template('detected_vehicles.html')
+    videos=request.args.getlist('videos')  
+    print(videos)
+    filters={'From Date':'',"To Date":'',"From Time":'',"To Time":'',
+    "Vehicle Number":'',"Vehicle Type":'',"Color":''}
+    if request.method == 'POST':
+        prevfilters=request.form['filters']
+        print(prevfilters)
+        today=datetime.date.today().strftime("%Y-%m-%d")
+        if request.form['fromdate'] and request.form['todate'] and request.form['fromdate']>request.form['todate']:
+            flash("From Date should be before or same as To Date")
+        elif (request.form['fromdate'] and request.form['fromdate']>today) or\
+        (request.form['todate'] and request.form['todate']>today):
+            flash("Date should not exceed today's date")
+        else:
+            filters['From Date']=request.form['fromdate']
+            filters['To Date']=request.form['todate']
+        if request.form['fromtime']:
+            filters['From Time']=request.form['fromtime']
+        if request.form['totime']:
+            filters['To Time']=request.form['totime']
+        if request.form['vehiclenumber']:
+            filters['Vehicle Number']=request.form['vehiclenumber']
+        if request.form['color']:
+            filters['Color']=request.form['color']
 
-#Detect Vehicles from Image
-@app.route("/image_detect_vehicles", methods=['GET', 'POST'])
-def image_detect_vehicles():
-    return render_template('image_detect_vehicles.html')
+
+    return render_template('detected_vehicles.html',filters=filters)
+
 
 class Login(FlaskForm):
-    email = TextField('Email:', validators=[validators.required()])
-    password = PasswordField('Password:', validators=[validators.required(), validators.Length(min=3, max=35)])
+    email = StringField(label=('Email:'), validators=[validators.DataRequired(),validators.Email(),
+     validators.Length(max=120)])
+    password = PasswordField(label=('Password:'), validators=[validators.DataRequired(),
+     validators.Length(min=3, max=35,message="Password should be between %(min)d and %(max)d characters long")])
    
 class Register(FlaskForm):
-    name = TextField('Full Name:', validators=[validators.required()])
-    email = TextField('Email:', validators=[validators.required()])
-    password = PasswordField('Password:', validators=[validators.required(), validators.Length(min=3, max=35)])
-    cpassword = PasswordField('Confirm Password:', validators=[validators.required(), validators.Length(min=3, max=35),
+    name = TextField('Full Name:', validators=[validators.required(), validators.Length(min=3, max=120),
+    validators.Regexp("^[a-zA-Z\\s]*$", message="Name can contain only alphabets and spaces")])
+    email = TextField('Email:', validators=[validators.DataRequired(), validators.Email(),
+     validators.Length(max=120)])
+    password = PasswordField('Password:', validators=[validators.required(),
+     validators.Length(min=3, max=35,message="Password should be between %(min)d and %(max)d characters long")])
+    cpassword = PasswordField('Confirm Password:', validators=[validators.required(), 
+        validators.Length(min=3, max=35,message="Password should be between %(min)d and %(max)d characters long"),
                 validators.EqualTo('password', message='Passwords must match')])
 
 

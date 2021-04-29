@@ -11,7 +11,7 @@ body{
 	position: relative;
 	border-radius: 0;
 }
-	.panel-login>.panel-heading a{
+	.panel-login>.panel-heading a,.panel-login>.panel-heading span{
 	text-decoration: none;
 	color: rgb(255,255,255,0.7);
 	font-weight: bold;
@@ -24,7 +24,7 @@ body{
 	-moz-transition: all 0.1s linear;
 	transition: all 0.1s linear;
 }
-.panel-login>.panel-heading a.active{
+.panel-login>.panel-heading a.active,.panel-login>.panel-heading span{
 	color: #3a7760;
 	background: #ffffff;
 	font-size: 15px;

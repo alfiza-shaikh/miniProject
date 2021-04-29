@@ -116,3 +116,16 @@
    }
 }
 
+.primary{
+   width: 100%;
+   background-color: #2aab7c;
+   color: white;
+   border:2px solid #63d8ad;
+   outline:none;
+}
+.primary:hover,.primary:active,.primary:focus{
+   background-color: #63d8ad;
+   color: white;
+   outline:none;
+   border:2px solid #2aab7c;
+}

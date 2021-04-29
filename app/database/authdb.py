@@ -10,6 +10,6 @@ def register(name,email,password):
 def login(email,password):
     data=execute("SELECT * FROM users WHERE email='"+email+"' AND pass='"+password+"'")
     if data:
-        return data[0][2]
+        return data[0]
     return None
 
