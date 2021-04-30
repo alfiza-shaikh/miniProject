@@ -183,7 +183,7 @@ div{
         <div class="col-md-4 filters">
             <p>Applied Filters <i class="fa fa-filter" aria-hidden="true"></i></p> 
             <hr>
-            <button class="btn btn-danger ">Clear All</button>
+            <button style="display: none;" class="btn btn-danger ">Clear All</button>
             {% for filter in filters %}
             {%if filters[filter] !=""%}
             <div class="alert alert-primary">
@@ -254,12 +254,12 @@ div{
 
     $(".btn-danger").click(function(){
         $("input").val("");
-        // $(".btn-danger").hide();
+        $(".btn-danger").hide();
         $("#filtersForm").submit();
     });
-    // if($("#todate").val() || $("#fromdate").val()){
-    //     $(".btn-danger").show();
-    // }
+    if($("input").val() || $("select").val()){
+        $(".btn-danger").show();
+    }
     
 </script>
 </body>
