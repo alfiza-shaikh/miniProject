@@ -327,8 +327,8 @@ def detected_vehicles():
     filters={'From Date':'',"To Date":'',"From Time":'',"To Time":'',
     "Vehicle Number":'',"Vehicle Type":'',"Color":''}
     if request.method == 'POST':
-        prevfilters=request.form['filters']
-        print(prevfilters)
+        # prevfilters=request.form['filters']
+        # print(prevfilters)
         today=datetime.date.today().strftime("%Y-%m-%d")
         if request.form['fromdate'] and request.form['todate'] and request.form['fromdate']>request.form['todate']:
             flash("From Date should be before or same as To Date")
@@ -344,11 +344,16 @@ def detected_vehicles():
             filters['To Time']=request.form['totime']
         if request.form['vehiclenumber']:
             filters['Vehicle Number']=request.form['vehiclenumber']
+        if request.form['vehicles']:
+            filters['Vehicle Type']=request.form['vehicles']
         if request.form['color']:
             filters['Color']=request.form['color']
+        if request.form.get("deleteFilter"):
+            filters[request.form['deleteFilter']]=""
+            print("deleting filter")
 
 
-    return render_template('detected_vehicles.html',filters=filters)
+    return render_template('detected_vehicles.html',vehiclesList=['Ambulance','Bus','Car','Motorcycle','Truck'],filters=filters)
 
 
 class Login(FlaskForm):

@@ -30,7 +30,9 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 
  <style>
-
+.nice-select{
+    display:none;
+}
 .col-4,.col-2,.col-5{
     padding-top:15px;
 }
@@ -102,7 +104,7 @@ div{
     <br>
 <h2 align="center"> Detected Vehicles </h2>
     	<div class="container-fluid">
-            <form action="" method="POST">
+            <form action="" method="POST" id="filtersForm">
                 {% for message in get_flashed_messages() %}
                 <div class="row">
                     <div class="col-md-6">
@@ -150,18 +152,21 @@ div{
                         <div class="col-4">
                             <select name="vehicles" id="vehicles">
                                 <option value="">Select Vehicle Type</option>
-                                <option value="ambulance" >Ambulance</option>
-                                <option value="bus">Bus</option>
-                                <option value="car">Car</option>
-                                <option value="motorcycle">Motorcycle</option>
-                                <option value="truck">Truck</option>
+                                {% for vehicle in vehiclesList%}
+                                    <option value="{{vehicle}}" 
+                                    {%if vehicle==filters['Vehicle Type']%}
+                                    selected
+                                    {%endif%}
+                                    >{{vehicle}}</option>
+                                {% endfor%}
+                                
                               </select>
                             </div>
                         <div class="col-4">
                             <input type="text" placeholder="Enter color" name="color" value="{{filters['Color']}}">
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" style="display: none;">
                         <div class="offset-8 col-4">
                         <button type="submit" name="filters" value="{{filters}}" class="btn btn-success btn-search">Apply</button>   
                         </div>
@@ -182,7 +187,9 @@ div{
             {% for filter in filters %}
             {%if filters[filter] !=""%}
             <div class="alert alert-primary">
-                <button type="button" class="close" data-dismiss="alert"><i class="fa fa-trash"></i></button>
+                <button form="filtersForm" class="close" name="deleteFilter" value="{{filter}}" 
+                type="submit"
+                ><i class="fa fa-trash"></i></button>
                 {{filter}}: {{filters[filter]}}
             </div>
             {%endif%}
@@ -232,7 +239,29 @@ div{
     </div>
 </div>
     
+{% include 'scripts.html' %}
+<script>
+    // if ( window.history.replaceState ) {
+    //      window.history.replaceState( null, null, window.location.href );
+    //   }
 
+    $("input").change(function(){
+        this.form.submit();
+    });
+    $("select").change(function(){
+        this.form.submit();
+    });
+
+    $(".btn-danger").click(function(){
+        $("input").val("");
+        // $(".btn-danger").hide();
+        $("#filtersForm").submit();
+    });
+    // if($("#todate").val() || $("#fromdate").val()){
+    //     $(".btn-danger").show();
+    // }
+    
+</script>
 </body>
 </html>
 
