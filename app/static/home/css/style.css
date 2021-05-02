@@ -147,9 +147,9 @@ p {
 	width: 100%;
 	float: left;
 	background-image: url(../images/banner.png);
-	height: auto;
+	/* height: auto; */
 	padding-top: 20px;
-	padding-bottom: 20px;
+	/* padding-bottom: 20px; */
 	background-size:cover;
 	background-size: 100%;
     background-repeat: no-repeat;
@@ -223,7 +223,7 @@ background-color: #148a5f;
 }
 
 .logo{ width: 100%; float: left; }
-.web_text{ width: 100%; float: left; font-size: 48px; padding-top: 160px;}
+.web_text{ width: 100%; float: left;font-size: 48px; padding-top: 50px;}
 .margin-top-20{ margin-top: 20px; }
 
 .donec_text{
@@ -239,10 +239,13 @@ background-color: #148a5f;
 	width: 100%;
 	float: left;
 }
-.taital_main{
+.title_main{
 	width: 100%;
 	float: left;
 	margin-top: 30px;
+    font-size: 30px;
+    color:#148a5f;
+    text-shadow: 1px 1px 0 #fff ,1px -1px 0 #fff,  -1px 1px 0 #fff,-1px -1px 0 #fff;
 }
 .get_bg{
 	background-color: #2ba879;

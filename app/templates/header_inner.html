@@ -19,14 +19,20 @@
                          <li><a href="{{url_for('index')}}" 
                             {% if active_page=="index" %} class="nav-active"{% endif %}
                             ><i class="fa fa-car" style="font-size:22px"></i> Home</a></li>	 
-                         <li><a href="{{url_for('uploads')}}" 
+                         <!-- <li><a href="{{url_for('uploads')}}" 
                              class="{% if not session['email'] %} disabled {%endif%}{% if active_page=='uploads' or active_page=='detected_vehicles'%} nav-active {% endif %}" >
-                            <i class="fa fa-upload" style="font-size:22px"></i> My Uploads</a></li>
+                            <i class="fa fa-upload" style="font-size:22px"></i> My Uploads</a></li> -->
                          <!-- <li><a href="{{url_for('detected_vehicles')}}" class="{% if not session['email'] %} disabled {%endif%}"><i class="fa fa-car" style="font-size:22px"></i> Detected Vehicles</a></li> -->
-                         <li><a href="{{url_for('history')}}"
+                         <!-- <li><a href="{{url_for('history')}}"
                          class="{% if not session['email'] %} disabled {%endif%} {% if active_page=='history' %} nav-active {% endif %} ">
-                        <i class="fa fa-history" style="font-size:22px"></i> History</a></li>
+                        <i class="fa fa-history" style="font-size:22px"></i> History</a></li> -->
                          {% if session['email'] %}
+                         <li><a href="{{url_for('uploads')}}" 
+                           class="{% if active_page=='uploads' or active_page=='detected_vehicles'%} nav-active {% endif %}" >
+                          <i class="fa fa-upload" style="font-size:22px"></i> My Uploads</a></li> 
+                          <li><a href="{{url_for('history')}}"
+                           class="{% if active_page=='history' %} nav-active {% endif %} ">
+                          <i class="fa fa-history" style="font-size:22px"></i> History</a></li>
                          <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                              {{session['name']}}

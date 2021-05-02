@@ -67,7 +67,7 @@
                <div class="row">
                   <div class="col-10">
                      <div class="textbox">
-                        <input type="text" class="input" name="newFolder" placeholder="New Folder"> 
+                        <input type="text" class="input" name="newFolder" minlength="3" maxlength="20" placeholder="Create New Folder"> 
                   </div>
                   </div>
                   <div class="col-2">
@@ -131,19 +131,19 @@
                <div class="col-md-2">
                   <i class="fa fa-check-square check-uncheck-all"></i>
                   <!-- <i class="fa fa-minus-square-o"></i> -->
-                  <button type="submit" name="deleteVideos" value="" onClick="javascript: return confirm('Please confirm deletion. All selected videos will be deleted');"><i class="fa fa-trash deleteAll"></i></button>
+                  <button type="submit" name="deleteVideos" title="Delete selected videos" value="" onClick="javascript: return confirm('Please confirm deletion. All selected videos will be deleted');"><i class="fa fa-trash deleteAll"></i></button>
                </div>
                
                <div class="col-md-4">
-                  <input type="text"  placeholder="Enter Video Name" name="svideo" form="search-Videos"  value="{{request.form['svideo']}}">
+                  <input type="text" class="searchVideo" placeholder="Search by Video Name" name="svideo" form="search-Videos"  value="{{request.form['svideo']}}">
                </div>
-               <div class="col-md-4">
-                  <label>Select Date: </label>
-                  <input type="date" id="date" name="videodate" form="search-Videos" value="{{request.form['videodate']}}">
+               <div class="col-md-*">
+                  <label>Search by Date: </label>
+                  <input type="date" class="searchVideo"  id="date" name="videodate" form="search-Videos" value="{{request.form['videodate']}}">
+                  <i class="fa fa-close" id="dateReset"></i>
                </div>
-               <div class="col-md-2">
-                  <button type="submit" name="searchVideos" form="search-Videos" class="btn btn-info">Search <i class="fa fa-search" aria-hidden="true"></i></button>
-               </div>
+               <button type="submit" style="display:none" name="searchVideos" form="search-Videos" class="btn btn-info">Search <i class="fa fa-search" aria-hidden="true"></i></button>
+
 
             </div>
             <div class="row">
@@ -160,6 +160,7 @@
             </div>
             
             {%if videos%}
+            <p>Select videos to detect vehicles</p>
             <ul class="list-group list-group-flush">
                {% for video in videos %}
                <li class="list-group-item">
@@ -211,7 +212,7 @@
                      </div>
                      <div class="form-group">
                         <label>Video Name *</label>
-                        <input type="text" placeholder="Video1" name="video-name" class="form-control" required>
+                        <input type="text" placeholder="Video1" name="video-name" class="form-control"  minlength="3" maxlength="20" required>
                      </div>
                      <div class="form-group">
                         <label>Comment</label>
@@ -263,7 +264,7 @@
                   <form action="{{url_for('uploads')}}?folder={{openFolder}}" method="post">
                      <div class="form-group">
                         <label>Video Name *</label>
-                        <input type="text" placeholder="Video1" name="new-video-name" class="form-control" value="{{openVideo[0]}}" required>
+                        <input type="text" placeholder="Video1" name="new-video-name" class="form-control" value="{{openVideo[0]}}"  minlength="3" maxlength="20" required>
                      </div>
                      <div class="form-group">
                         <label>Comment</label>
@@ -370,7 +371,14 @@
          }
       });
 
-
+      $(".searchVideo").change(function(){
+         // console.log(this.form.id)
+         $('[name="searchVideos"]')[0].click();
+      });
+      $('#dateReset').click(function(){
+         $('input[type="date"]').val("")
+         $('[name="searchVideos"]')[0].click();
+      })
    </script>
    {% include 'scripts.html' %}
 

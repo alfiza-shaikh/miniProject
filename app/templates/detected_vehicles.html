@@ -86,6 +86,10 @@ div{
     font-weight: 500;
     font-size: 1.01em;
 }
+input:not([name='fromtime']):not([name='totime']),select{
+    width:100%;
+}
+
 </style> 
 </head>
 <body>
@@ -116,7 +120,58 @@ div{
                 </div>
                 {% endfor %}
     		<div class="row">
-    			<div class="col-md-6">
+                <!-- <div class="col-2">
+                    Filter by Video Time
+                  </div> -->
+
+                    <div class="col-12">
+                        Filter By Time in video
+                        </div>
+                    <div class=" col-xs-3">
+                        <label>From Time: </label>
+                        <input type="text" maxlength=8 pattern="^([01]?[0-9]|2[0-3])(?::([0-5]\d))?(?::([0-5]\d))?$"
+                          title="The amount of hours (max 23), optionally succeeded by 
+                              &quot;minutes:&quot; (max 59) or by &quot;minutes:seconds:&quot; (max 59)."
+                          placeholder="hh:mm:ss" 
+                          name="fromtime" value="{{filters['From Time']}}"
+                          >
+                        <!-- <input type="time" id="fromtime" step="1"  min="00:00:00" max="24:00:00" name="fromtime" value="{{filters['From Time']}}"> -->
+                    </div>
+                    <div class="col-xs-3">
+                        <label>To Time: </label>
+                        <input type="text" maxlength=8 pattern="^([01]?[0-9]|2[0-3])(?::([0-5]\d))?(?::([0-5]\d))?$"
+                        title="The amount of hours (max 23), optionally succeeded by 
+                              &quot;minutes:&quot; (max 59) or by &quot;minutes:seconds:&quot; (max 59)."
+                        placeholder="hh:mm:ss" 
+                        name="totime" value="{{filters['To Time']}}"
+                        >
+                        <!-- <input type="time" id="totime" step="1"  min="00:00:00" max="24:00:00" name="totime" value="{{filters['To Time']}}"> -->
+                    </div>
+                
+                  <div class="offset-sm-1 col-sm-3 ">
+                    <input type="text" placeholder="Search by vehicle number" name="vehiclenumber" value="{{filters['Vehicle Number']}}">
+                </div>
+                <div class="col-sm-3">
+                    <select name="vehicles" id="vehicles">
+                        <option value="">Select Vehicle Type</option>
+                        {% for vehicle in vehiclesList%}
+                            <option value="{{vehicle}}" 
+                            {%if vehicle==filters['Vehicle Type']%}
+                            selected
+                            {%endif%}
+                            >{{vehicle}}</option>
+                        {% endfor%}
+                        
+                      </select>
+                    </div>
+ 
+                <div style="display: none;">
+                    <div class="offset-8 col-4">
+                    <button type="submit" name="filters" value="{{filters}}" class="btn btn-success btn-search">Apply</button>   
+                    </div>
+                </div>
+
+    			<!-- <div class="col-md-6">
                         <div class="row">
                             <div class="col-2">
                                 Select Date
@@ -131,23 +186,23 @@ div{
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-2">
-                                Select Time
+                            <div >
+                              Filter by Video Time
                             </div>
-                            <div class="col-5">
+                            <div >
                                 <label>From: </label>
                                 <input type="time" id="fromtime" name="fromtime" value="{{filters['From Time']}}">
                             </div>
-                            <div class="col-5">
+                            <div >
                                 <label>To: </label>
                                 <input type="time" id="totime" name="totime" value="{{filters['To Time']}}">
                             </div>
                         </div>
-    			</div>
-    			<div class="col-md-6">
+    			</div> -->
+    			<!-- <div class="col-md-6">
     				<div class="row">
                         <div class="col-4">
-                            <input type="text" placeholder="Enter vehicle number" name="vehiclenumber" value="{{filters['Vehicle Number']}}">
+                            <input type="text" placeholder="Search by vehicle number" name="vehiclenumber" value="{{filters['Vehicle Number']}}">
                         </div>
                         <div class="col-4">
                             <select name="vehicles" id="vehicles">
@@ -166,12 +221,12 @@ div{
                             <input type="text" placeholder="Enter color" name="color" value="{{filters['Color']}}">
                         </div>
                     </div>
-                    <div class="row" style="display: none;">
+                    <div style="display: none;">
                         <div class="offset-8 col-4">
                         <button type="submit" name="filters" value="{{filters}}" class="btn btn-success btn-search">Apply</button>   
                         </div>
                     </div>
-    			</div>
+    			</div> -->
     		</div>
             </form>
     	</div>
@@ -197,44 +252,35 @@ div{
 
         </div>
         <div class="col-md-8 table">
+            {%if detected_vehicles %}
             <table class="table table-hover table-responsive-sm">
                 <thead>
                   <tr>
                     <th scope="col">Vehicle Number</th>
                     <th scope="col">Type</th>
-                    <th scope="col">Color</th>
-                    <th scope="col">Date</th>
+                    <!-- <th scope="col">Color</th> -->
+                    <!-- <th scope="col">Date</th> -->
                     <th scope="col">Time</th>
                     <th scope="col">Video Link</th>
                   </tr>
                 </thead>
                 <tbody>
+                {%for vehicle in detected_vehicles%}
                   <tr>
-                    <td>MH01AW1233</td>
-                    <td>Car</td>
-                    <td>Orange</td>
-                    <td>21/3/21</td>
-                    <td>21:02:02</td>
-                    <td><a href="">Video1</a></td>
+                    <td>{{vehicle[0]}}</td>
+                    <td>{{vehicle[1]}}</td>
+                    <!-- <td>Orange</td>
+                    <td>21/3/21</td> -->
+                    <td>{{vehicle[2]}}</td>
+                    <td><a href="{{ url_for('uploads',folder=vehicle[3],video=vehicle[4]) }}">{{vehicle[3]}}/{{vehicle[4]}}</a></td>
                   </tr>
-                  <tr>
-                    <td>MH01AW1233</td>
-                    <td>Car</td>
-                    <td>Orange</td>
-                    <td>21/3/21</td>
-                    <td>21:02:02</td>
-                    <td><a href="">Video1</a></td>
-                  </tr>
-                  <tr>
-                    <td>MH01AW1233</td>
-                    <td>Car</td>
-                    <td>Orange</td>
-                    <td>21/3/21</td>
-                    <td>21:02:02</td>
-                    <td><a href="">Video1</a></td>
-                  </tr>
+                {%endfor%}
+                  
                 </tbody>
               </table>
+              {%else%}
+              <p>No vehicles detected</p>
+              {%endif%}
         </div>
     </div>
 </div>
@@ -246,21 +292,43 @@ div{
     //   }
 
     $("input").change(function(){
-        this.form.submit();
+        $("[name='filters']").click();
+        // $("#filtersForm").validate({
+        // submitHandler: function(form) {
+        //     // do other things for a valid form
+        //     // form.submit();
+        //     console.log("fe")
+        // }
+        // });
+        // if($(this).id=="fromtime" || $(this).id=="totime")
+        // {
+        //     var re = new RegExp("^([0-1]?\d|2[0-3])(?::([0-5]?\d))?(?::([0-5]?\d))?$");
+        //     if (re.test($(this).val())) {
+        //         console.log("Valid");
+        //     } else {
+        //         console.log("Invalid");
+        //     }
+        // }
+        
     });
     $("select").change(function(){
-        this.form.submit();
+        // this.form.submit();
+        $("[name='filters']").click();
     });
 
     $(".btn-danger").click(function(){
         $("input").val("");
-        $(".btn-danger").hide();
+        $("select").children("option").val("");
+        // $(".btn-danger").hide();
         $("#filtersForm").submit();
     });
-    if($("input").val() || $("select").val()){
+    $( document ).ready(function() {
+        var selected=$("select").children("option").filter(":selected").val()
+        if( $('input[value!=""]').length > 0  || selected!=''){  
         $(".btn-danger").show();
     }
-    
+});
+
 </script>
 </body>
 </html>

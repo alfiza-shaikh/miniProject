@@ -1,10 +1,12 @@
 from flask_wtf import FlaskForm
 from flask import Flask, render_template, request, session,redirect, url_for,flash
+from flask import Markup
 from wtforms import TextField, PasswordField, validators, StringField, SubmitField
 from flask_wtf.csrf import CSRFProtect
 import database.authdb
 import database.uploadsdb
 import database.historydb
+import database.detectedvehiclesdb
 import hashlib
 import os
 import time
@@ -104,7 +106,8 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def createFolder(fname):
-    if fname!="":
+    fname=fname.strip()
+    if fname!=""  and len(newfname)>=3 and len(newfname)<=20:
         folderAdded=database.uploadsdb.createFolderDB(fname,session['email'])
         if folderAdded:
             database.historydb.insertHistoryDB(session['email'],'Create','Folder '+fname+' created')
@@ -112,7 +115,7 @@ def createFolder(fname):
         else:
             flash('Folder '+fname+' already exists.','warning')
     else:
-        flash('Folder name cannot be blank','warning')
+        flash('Length of folder name should be between 3 and 20 characters long.','warning')
 
 def deleteFolder(fname):
     videosinFolder=database.uploadsdb.getVideosinFolder(fname,session['email'])
@@ -129,12 +132,16 @@ def deleteFolder(fname):
         flash('Folder '+fname+' cannot be deleted.','warning')
 
 def editFolder(fname,newfname):
-    updated=database.uploadsdb.updateFolderDB(fname,session['email'],newfname)
-    if updated:
-        database.historydb.insertHistoryDB(session['email'],'Rename','Folder '+fname+' renamed to '+newfname)
-        flash('Folder '+fname+' renamed to '+newfname+'.','success')
+    newfname=newfname.strip()
+    if newfname!="" and len(newfname)>=3 and len(newfname)<=20:
+        updated=database.uploadsdb.updateFolderDB(fname,session['email'],newfname)
+        if updated:
+            database.historydb.insertHistoryDB(session['email'],'Rename','Folder '+fname+' renamed to '+newfname)
+            flash('Folder '+fname+' renamed to '+newfname+'.','success')
+        else:
+            flash('Folder '+fname+' cannot be renamed.','warning')
     else:
-        flash('Folder '+fname+' cannot be renamed.','warning')
+       flash('Length of folder name should be between 3 and 20 characters long.','warning') 
 
 
 def deleteVideo(videoref):
@@ -324,36 +331,40 @@ def history():
 def detected_vehicles():
     videos=request.args.getlist('videos')  
     print(videos)
+    if not videos:
+        flash(Markup('Select video(s) first. Go to <a href="uploads">Uploads page</a>.'))
     filters={'From Date':'',"To Date":'',"From Time":'',"To Time":'',
     "Vehicle Number":'',"Vehicle Type":'',"Color":''}
     if request.method == 'POST':
         # prevfilters=request.form['filters']
         # print(prevfilters)
         today=datetime.date.today().strftime("%Y-%m-%d")
-        if request.form['fromdate'] and request.form['todate'] and request.form['fromdate']>request.form['todate']:
-            flash("From Date should be before or same as To Date")
-        elif (request.form['fromdate'] and request.form['fromdate']>today) or\
-        (request.form['todate'] and request.form['todate']>today):
-            flash("Date should not exceed today's date")
+        if request.form['fromtime'] and request.form['totime'] and request.form['fromtime']>request.form['totime']:
+            flash("From Time should be before or same as To Time")
+        # elif (request.form['fromdate'] and request.form['fromdate']>today) or\
+        # (request.form['todate'] and request.form['todate']>today):
+        #     flash("Date should not exceed today's date")
         else:
-            filters['From Date']=request.form['fromdate']
-            filters['To Date']=request.form['todate']
-        if request.form['fromtime']:
             filters['From Time']=request.form['fromtime']
-        if request.form['totime']:
             filters['To Time']=request.form['totime']
+        # if request.form['fromtime']:
+        #     filters['From Time']=request.form['fromtime']
+        # if request.form['totime']:
+        #     filters['To Time']=request.form['totime']
         if request.form['vehiclenumber']:
             filters['Vehicle Number']=request.form['vehiclenumber']
         if request.form['vehicles']:
             filters['Vehicle Type']=request.form['vehicles']
-        if request.form['color']:
-            filters['Color']=request.form['color']
+        # if request.form['color']:
+        #     filters['Color']=request.form['color']
         if request.form.get("deleteFilter"):
             filters[request.form['deleteFilter']]=""
             print("deleting filter")
 
+    d_vehicles=database.detectedvehiclesdb.getDVFiltered(videos,filters)
+    print(d_vehicles)
 
-    return render_template('detected_vehicles.html',vehiclesList=['Ambulance','Bus','Car','Motorcycle','Truck'],filters=filters)
+    return render_template('detected_vehicles.html',vehiclesList=['Ambulance','Bus','Car','Motorcycle','Truck'],filters=filters,detected_vehicles=d_vehicles)
 
 
 class Login(FlaskForm):

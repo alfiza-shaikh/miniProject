@@ -132,7 +132,7 @@
     .info_icon { min-width: 13%;}
     .menu_main { width: 65%;}
 
-    .web_text { font-size: 22px;}
+    .web_text { font-size: 20px;}
     .donec_text { font-size: 14px; margin-right: 0px;}
     .get_bg { display: none;}
 
@@ -173,7 +173,7 @@ width: 30%;
     .email_btn { padding: 41px;}
     .menu_main { width: 55%;}
     .main-menu ul>li a { font-size: 15px; padding: 16px 16px;}
-    .web_text { font-size: 40px; padding-top: 0px;}
+    .web_text { font-size: 30px; padding-top: 0px;}
     .map_main { padding-left: 0px; font-size: 14px;}
     .londan_text { padding-left: 16px;}
     .menu_text {  width: 24%;}
@@ -231,7 +231,7 @@ width: 41%;
 .menu_main {
     width: 75%;}
 
-.web_text { font-size: 29px; padding-top: 0px;}
+.web_text { font-size: 26px; padding-top: 0px;}
 
 .donec_text { font-size: 12px;}
 
@@ -312,7 +312,7 @@ width: 55%;
 
 .choose_text { font-size: 37px;}
 .bt_main { width: 25%;}
-.web_text { font-size: 44px; padding-top: 0px; }
+.web_text { font-size: 36px; padding-top: 0px; }
 
 .contact_taital { padding-right: 0px; padding-left: 0px;}
 
