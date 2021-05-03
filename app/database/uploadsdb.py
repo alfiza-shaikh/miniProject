@@ -49,11 +49,11 @@ def updateVideoDB(video_ref,video_name,video_comment):
     updated=execute("UPDATE videos SET video_name='"+video_name+"',video_comment='"+video_comment+"' WHERE video_ref='"+video_ref+"'")
     return updated
 
-def searchVideoDB(folderName,email,vname,vdate):
+def searchVideoDB(folderName,email,vsearch,vdate):
     query="SELECT * FROM videos WHERE user_email='"+email+"'AND folder_name='"+folderName+"'"
     print(vdate)
-    if vname:
-        query+=" AND video_name iLIKE '%"+vname+"%'"
+    if vsearch:
+        query+=" AND ( video_name iLIKE '%"+vsearch+"%' OR video_comment iLIKE '%"+vsearch+"%')"
     if vdate:
         query+=" AND timestamp::date='"+vdate+"'"
         

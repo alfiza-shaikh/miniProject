@@ -11,6 +11,7 @@ import hashlib
 import os
 import time
 import datetime
+import re
 from decorators import login_required
 
 
@@ -18,7 +19,7 @@ from decorators import login_required
 csrf = CSRFProtect()
 UPLOAD_FOLDER = os.path.join(os.getcwd(), r'static/uploads')
 ALLOWED_EXTENSIONS = set(['mp4'])
-
+FOLDER_VIDEO_NAME_REGEX="^[A-Za-z0-9_ -]*$"
 app = Flask(__name__) 
 app.secret_key = 'your secret key'
 app.config['ENV'] = 'development'
@@ -38,8 +39,6 @@ def login():
     form = Login(request.form)
     if "email" not in session:
         if "login-submit" in request.form:
-            
-            
             if request.method == 'POST':
                 email=request.form['email']
                 password=hashlib.md5(request.form['password'].encode()).hexdigest()
@@ -107,7 +106,7 @@ def allowed_file(filename):
 
 def createFolder(fname):
     fname=fname.strip()
-    if fname!=""  and len(newfname)>=3 and len(newfname)<=20:
+    if fname!=""  and len(fname)>=3 and len(fname)<=20:
         folderAdded=database.uploadsdb.createFolderDB(fname,session['email'])
         if folderAdded:
             database.historydb.insertHistoryDB(session['email'],'Create','Folder '+fname+' created')
@@ -133,7 +132,8 @@ def deleteFolder(fname):
 
 def editFolder(fname,newfname):
     newfname=newfname.strip()
-    if newfname!="" and len(newfname)>=3 and len(newfname)<=20:
+    matched= bool(re.match(FOLDER_VIDEO_NAME_REGEX, newfname))
+    if newfname!="" and len(newfname)>=3 and len(newfname)<=20 and matched:
         updated=database.uploadsdb.updateFolderDB(fname,session['email'],newfname)
         if updated:
             database.historydb.insertHistoryDB(session['email'],'Rename','Folder '+fname+' renamed to '+newfname)
@@ -141,7 +141,10 @@ def editFolder(fname,newfname):
         else:
             flash('Folder '+fname+' cannot be renamed.','warning')
     else:
-       flash('Length of folder name should be between 3 and 20 characters long.','warning') 
+        if matched:
+            flash('Length of folder name should be between 3 and 20 characters long.','warning') 
+        else:
+            flash('Only alphabets, numbers, spaces, hiphens and underscores allowed.','warning')
 
 
 def deleteVideo(videoref):
@@ -272,6 +275,9 @@ def uploads():
             if request.method == 'POST' and 'searchVideos' in request.form:
                 video_search=request.form['svideo']
                 video_date=request.form['videodate']
+                today=datetime.date.today().strftime("%Y-%m-%d")
+                if video_date and video_date>today:
+                    flash("Date exceeds today's date",'warning')
                 videos=database.uploadsdb.searchVideoDB(openFolder,session['email'],video_search,video_date)
             else:
                 videos=database.uploadsdb.getVideosinFolder(openFolder,session['email']) 

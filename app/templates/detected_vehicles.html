@@ -149,7 +149,7 @@ input:not([name='fromtime']):not([name='totime']),select{
                     </div>
                 
                   <div class="offset-sm-1 col-sm-3 ">
-                    <input type="text" placeholder="Search by vehicle number" name="vehiclenumber" value="{{filters['Vehicle Number']}}">
+                    <input type="text" placeholder="Search by vehicle number" name="vehiclenumber" value="{{filters['Vehicle Number']}}" pattern="^[A-Z0-9]*$" title="Only capital letters and numbers allowed.">
                 </div>
                 <div class="col-sm-3">
                     <select name="vehicles" id="vehicles">
