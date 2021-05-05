@@ -1,0 +1,17 @@
+opencv-python==4.1.1.26
+lxml
+tqdm
+tensorflow==2.3.0rc0
+absl-py
+easydict
+matplotlib
+pillow
+pytesseract
+tensorflow-gpu
+opencv-python
+Flask
+wtforms
+flask_wtf
+flask_bcrypt
+psycopg2
+email_validator

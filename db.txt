@@ -49,7 +49,7 @@ CREATE TABLE vehicles(
 	vehicle_LPN VARCHAR(20) NOT NULL,
 	vehicle_type VARCHAR(50),
 	video_ref varchar(500) NOT NULL,
-	time time,
+	video_time INT NOT NULL,
 	CONSTRAINT video_ref FOREIGN KEY(video_ref) 
 		REFERENCES videos(video_ref) ON UPDATE CASCADE ON DELETE CASCADE
 );

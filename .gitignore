@@ -1,0 +1,5 @@
+custom.weights
+custom_license_plate.weights
+__pycache__
+app/detection_model/checkpoints/*
+app/static/uploads/*

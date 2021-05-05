@@ -13,6 +13,7 @@ import time
 import datetime
 import re
 from decorators import login_required
+import detection_model.detect_video as detection
 
 
 
@@ -200,7 +201,6 @@ def uploads():
             if file and allowed_file(file.filename):
                 # create a folder in static/uploads/ named 'email of user'
                 user_folder=os.path.join(UPLOAD_FOLDER, session['email'])
-                print(os.path.exists(user_folder))
                 if not os.path.exists(user_folder):
                     os.makedirs(user_folder)
                 # filename foldername_videoname.extension
@@ -211,11 +211,14 @@ def uploads():
                         'comment':request.form['video-comment'],
                         'ref':filename}
                 videoUploaded=database.uploadsdb.uploadVideoDB(video,openFolder,session['email'])
+                print("Video Uploaded")
                 if videoUploaded:
-                    file.save(os.path.join(user_folder, filename))
+                    video_path=os.path.join(user_folder, filename)
+                    file.save(video_path)
                     msg='Video '+request.form['video-name']+' uploaded in folder '+openFolder+'.'
                     database.historydb.insertHistoryDB(session['email'],'Upload',msg)
                     flash(msg,'success')
+                    detection.main(video_path)
                 else:
                     flash('Video '+request.form['video-name']+' already exists.','warning')
             else:
@@ -330,13 +333,27 @@ def history():
                 historyData[date]=[listH[:3]]
     return render_template('history.html',history=historyData,dates=dates)
 
+@app.template_filter('convert_time')
+def convert_time(seconds): 
+    hours=seconds//(60*60)
+    seconds%=(60*60)
+    minutes=seconds//60
+    seconds%=60
+    time=""
+    if hours!=0:
+        time=str(hours)+"hr "
+    if minutes!=0:
+        time=str(minutes)+"min "
+    time=str(seconds)+"s "
+
+    return time
+
 #Detected Vehicles
 @app.route("/detected_vehicles", methods=['GET', 'POST'])
 @csrf.exempt
 @login_required
 def detected_vehicles():
     videos=request.args.getlist('videos')  
-    print(videos)
     if not videos:
         flash(Markup('Select video(s) first. Go to <a href="uploads">Uploads page</a>.'))
     filters={'From Date':'',"To Date":'',"From Time":'',"To Time":'',
@@ -344,15 +361,15 @@ def detected_vehicles():
     if request.method == 'POST':
         # prevfilters=request.form['filters']
         # print(prevfilters)
-        today=datetime.date.today().strftime("%Y-%m-%d")
-        if request.form['fromtime'] and request.form['totime'] and request.form['fromtime']>request.form['totime']:
-            flash("From Time should be before or same as To Time")
+        # today=datetime.date.today().strftime("%Y-%m-%d")
+        # if request.form['fromtime'] and request.form['totime'] and request.form['fromtime']>request.form['totime']:
+        #     flash("From Time should be before or same as To Time")
         # elif (request.form['fromdate'] and request.form['fromdate']>today) or\
         # (request.form['todate'] and request.form['todate']>today):
         #     flash("Date should not exceed today's date")
-        else:
-            filters['From Time']=request.form['fromtime']
-            filters['To Time']=request.form['totime']
+        # else:
+        #     filters['From Time']=request.form['fromtime']
+        #     filters['To Time']=request.form['totime']
         # if request.form['fromtime']:
         #     filters['From Time']=request.form['fromtime']
         # if request.form['totime']:
@@ -365,10 +382,8 @@ def detected_vehicles():
         #     filters['Color']=request.form['color']
         if request.form.get("deleteFilter"):
             filters[request.form['deleteFilter']]=""
-            print("deleting filter")
 
     d_vehicles=database.detectedvehiclesdb.getDVFiltered(videos,filters)
-    print(d_vehicles)
 
     return render_template('detected_vehicles.html',vehiclesList=['Ambulance','Bus','Car','Motorcycle','Truck'],filters=filters,detected_vehicles=d_vehicles)
 

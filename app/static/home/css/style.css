@@ -26,6 +26,7 @@
 * {
      box-sizing: border-box !important;
      transition: ease all 0.2s;
+     font-family: Helvetica, sans-serif;
 }
 
 html {
