@@ -15,3 +15,5 @@ flask_wtf
 flask_bcrypt
 psycopg2
 email_validator
+redis
+celery

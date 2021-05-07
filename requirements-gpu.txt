@@ -1,4 +1,0 @@
-tensorflow-gpu
-opencv-python
-
-

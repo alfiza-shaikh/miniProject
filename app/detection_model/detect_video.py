@@ -21,7 +21,6 @@ import time
 from math import floor
 import database.detectedvehiclesdb
 
-
 # flags.DEFINE_string('framework', 'tf', '(tf, tflite, trt')
 # flags.DEFINE_string('weights', './checkpoints/yolov4-416',
 #                     'path to weights file')
@@ -131,6 +130,8 @@ def main(video_path):
             if len(past_10_frame_plates) > 10:
                 past_10_frame_plates.pop(0)
             past_10_frame_plates.append(list_plate_num)
+    return {'current': 100, 'total': 100, 'status': 'Task completed!',
+            'result': 42}
 
 def check_number_exist(past_10_frame_plates, plate_number):
     for li in past_10_frame_plates:

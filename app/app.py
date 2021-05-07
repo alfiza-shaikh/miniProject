@@ -14,8 +14,7 @@ import datetime
 import re
 from decorators import login_required
 import detection_model.detect_video as detection
-
-
+from celery import Celery
 
 csrf = CSRFProtect()
 UPLOAD_FOLDER = os.path.join(os.getcwd(), r'static/uploads')
@@ -25,10 +24,25 @@ app = Flask(__name__)
 app.secret_key = 'your secret key'
 app.config['ENV'] = 'development'
 app.config['DEBUG'] = True
+app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
 
+celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+# celery.conf.update(app.config)
+"""
+For Background task of detection:
+First run redis-server.exe
+Then run celery:
+celery -A app.celery worker --loglevel=info
+Then flask run
+"""
 
 csrf.init_app(app)
 
+@celery.task
+def detection_task(video_path):
+    print("celery task")
+    detection.main(video_path)
 #Home
 @app.route('/') 
 def index():
@@ -210,15 +224,16 @@ def uploads():
                 video={ 'name':request.form['video-name'],
                         'comment':request.form['video-comment'],
                         'ref':filename}
-                videoUploaded=database.uploadsdb.uploadVideoDB(video,openFolder,session['email'])
-                print("Video Uploaded")
+                videoUploaded=database.uploadsdb.uploadVideoDB(video,openFolder,session['email']) 
                 if videoUploaded:
+                    print("Video Uploaded")
                     video_path=os.path.join(user_folder, filename)
                     file.save(video_path)
-                    msg='Video '+request.form['video-name']+' uploaded in folder '+openFolder+'.'
+                    msg='Video '+request.form['video-name']+' uploaded in folder '+openFolder+'. Detecting Vehicles...'
                     database.historydb.insertHistoryDB(session['email'],'Upload',msg)
                     flash(msg,'success')
-                    detection.main(video_path)
+                    # detection.main(video_path)
+                    detected=detection_task.apply_async(args=[video_path])
                 else:
                     flash('Video '+request.form['video-name']+' already exists.','warning')
             else:

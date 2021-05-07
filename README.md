@@ -1,2 +1,2 @@
-# miniProject
-Mini project sem 6
+# License Number Plate Recognition
+Mini Project Semester 6
