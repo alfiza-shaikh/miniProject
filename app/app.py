@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from flask import Flask, render_template, request, session,redirect, url_for,flash
+from flask import Flask, render_template, request, session,redirect, url_for,flash, jsonify
 from flask import Markup
 from wtforms import TextField, PasswordField, validators, StringField, SubmitField
 from flask_wtf.csrf import CSRFProtect
@@ -12,9 +12,11 @@ import os
 import time
 import datetime
 import re
+import copy
 from decorators import login_required
 import detection_model.detect_video as detection
 from celery import Celery
+
 
 csrf = CSRFProtect()
 UPLOAD_FOLDER = os.path.join(os.getcwd(), r'static/uploads')
@@ -27,7 +29,7 @@ app.config['DEBUG'] = True
 app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
 app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
 
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery = Celery(app.name, backend=app.config['CELERY_RESULT_BACKEND'],broker=app.config['CELERY_BROKER_URL'])
 # celery.conf.update(app.config)
 """
 For Background task of detection:
@@ -43,6 +45,9 @@ csrf.init_app(app)
 def detection_task(video_path):
     print("celery task")
     detection.main(video_path)
+    
+    
+
 #Home
 @app.route('/') 
 def index():
@@ -229,11 +234,18 @@ def uploads():
                     print("Video Uploaded")
                     video_path=os.path.join(user_folder, filename)
                     file.save(video_path)
-                    msg='Video '+request.form['video-name']+' uploaded in folder '+openFolder+'. Detecting Vehicles...'
+                    msg='Video '+request.form['video-name']+' uploaded in folder '+openFolder+'.'
                     database.historydb.insertHistoryDB(session['email'],'Upload',msg)
-                    flash(msg,'success')
+                    flash(msg+' Detecting Vehicles...','success')
                     # detection.main(video_path)
-                    detected=detection_task.apply_async(args=[video_path])
+                    dtask=detection_task.apply_async(args=[video_path])
+                    data=str(dtask.id)+" $ "+openFolder+" $ "+request.form['video-name']+"\n"
+                    print(data)
+                    task_file = open("static/celery_task.txt","a")
+                    task_file.write(data)
+                    task_file.close()
+
+                    # return jsonify({}), 202, {'Location': url_for('taskstatus',task_id=dtask.id)}
                 else:
                     flash('Video '+request.form['video-name']+' already exists.','warning')
             else:
@@ -310,10 +322,28 @@ def uploads():
         else:
             openFolder=None
             openVideo=None
+    i = celery.control.inspect()
+    # active_tasks=list(i.active().values())[0]
+    # print(active_tasks)
+    # active_tasks=[a['id'] for a in active_tasks]
+    # print("Active:",active_tasks)
+    task_file = open("static/celery_task.txt","r")
+    tasks_videos=task_file.readlines()
+    tasks_videos_copy=copy.deepcopy(tasks_videos)
+    # print(tasks_videos_copy)
+    for line in tasks_videos:
+        task=line.split(' $ ')[0]
+        if detection_task.AsyncResult(task).ready() == True:
+            # print("Remove Task:",task)
+            tasks_videos_copy.remove(line)
+    # print("Tasks:","".join(tasks_videos_copy))
+    task_file.close()
+    with open("static/celery_task.txt", "w") as f:
+        f.write("".join(tasks_videos_copy))
 
-    return render_template('uploads.html',folders=folders,openFolder=openFolder,videos=videos,openVideo=openVideo)
-
-
+    tasks_videos_copy=[t.split(" $ ") for t in tasks_videos_copy]
+    print(tasks_videos_copy)
+    return render_template('uploads.html',folders=folders,openFolder=openFolder,videos=videos,openVideo=openVideo,detecting_vehicles=tasks_videos_copy)
 
 
 
@@ -400,7 +430,7 @@ def detected_vehicles():
 
     d_vehicles=database.detectedvehiclesdb.getDVFiltered(videos,filters)
 
-    return render_template('detected_vehicles.html',vehiclesList=['Ambulance','Bus','Car','Motorcycle','Truck'],filters=filters,detected_vehicles=d_vehicles)
+    return render_template('detected_vehicles.html',vehiclesList=['Ambulance','Bus','Car / Taxi','Motorcycle / Scooter','Truck'],filters=filters,detected_vehicles=d_vehicles)
 
 
 class Login(FlaskForm):

@@ -32,7 +32,8 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 
 <link rel="stylesheet" href="{{url_for('static', filename='css/uploads.css')}}">
-
+<script src="//cdnjs.cloudflare.com/ajax/libs/nanobar/0.2.1/nanobar.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 </head>
 <body>
 	<header id="home"class="section">
@@ -59,6 +60,7 @@
          </div>
          {% endfor %}
       </div>
+      <div id="progress"></div>
       <div class="row main-section">
          
          <!-- First Column: Folders List -->
@@ -167,9 +169,18 @@
                <li class="list-group-item">
                   <a href="{{url_for('uploads')}}?folder={{openFolder}}&video={{video[0]}}" title="Click to view video"> 
                  <div class="media">
+                  {% set ns = namespace(detecting=false) %}
+                    {% for v in detecting_vehicles %}
+                        {%if v and v[1]==openFolder and v[2][:-1]==video[0]%}
+                        {% set ns.detecting = true %}
+                        <i class="fa fa-spinner fa-spin" title="Detecting vehicles..." style="font-size:24px"></i>
+                        {%endif%}
+                    {%endfor%}
+                  {% if not ns.detecting%}
                     <div class="checkbox pull-left">
-                          <input type="checkbox" name="selectedVideos" value="{{video[2]}}">				
-                    </div>
+                     <input type="checkbox" name="selectedVideos" value="{{video[2]}}">				
+                  </div>
+                  {%endif%}
                     <div class="pull-left">
                      <video width="100" height="70">
                         <source src="{{url_for('static', filename='uploads/'+session['email']+'/'+video[2])}}" type="video/mp4">
@@ -393,6 +404,7 @@
          }
       }
    </script>
+   
    {% include 'scripts.html' %}
 
 </body>

@@ -31,7 +31,7 @@ def getVideoFromRef(ref):
     return None
 
 def getVideosinFolder(folderName,email):
-    data=execute("SELECT * FROM videos WHERE user_email='"+email+"' AND folder_name='"+folderName+"'")
+    data=execute("SELECT * FROM videos WHERE user_email='"+email+"' AND folder_name='"+folderName+"' ORDER BY timestamp DESC")
     if data:
         return data 
     return None
@@ -56,7 +56,7 @@ def searchVideoDB(folderName,email,vsearch,vdate):
         query+=" AND ( video_name iLIKE '%"+vsearch+"%' OR video_comment iLIKE '%"+vsearch+"%')"
     if vdate:
         query+=" AND timestamp::date='"+vdate+"'"
-        
+    query+=" ORDER BY timestamp DESC"
     data=execute(query)
     if data:
         return data 

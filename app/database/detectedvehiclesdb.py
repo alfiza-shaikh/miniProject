@@ -1,6 +1,11 @@
 from database.conn import execute
 
 def insertDVDB(lpn,vtype,video_ref,time):
+    if vtype=='Car':
+        vtype='Car / Taxi'
+    elif vtype=='Motorcycle':
+        vtype='Motorcycle / Scooter'
+    print(vtype)
     inserted=execute("INSERT INTO vehicles values('"+lpn+"','"+vtype+"','"+video_ref+"',"+str(time)+")")
     return inserted
 
