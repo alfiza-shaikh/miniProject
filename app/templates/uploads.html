@@ -173,7 +173,7 @@
                     {% for v in detecting_vehicles %}
                         {%if v and v[1]==openFolder and v[2][:-1]==video[0]%}
                         {% set ns.detecting = true %}
-                        <i class="fa fa-spinner fa-spin" title="Detecting vehicles..." style="font-size:24px"></i>
+                        <i class="fa fa-spinner fa-spin" title="Detecting vehicles... Reload after few minutes" style="font-size:24px"></i>
                         {%endif%}
                     {%endfor%}
                   {% if not ns.detecting%}
@@ -249,10 +249,16 @@
             <div class="col-sm-12 col-md-3" id="videoDisplay">
                <form action="{{ url_for('uploads') }}?folder={{openFolder}}" method="POST">
                   <h3>{{openVideo[0]}}</h3>
-                  <button type="button" id="editVideo" data-toggle="modal" data-target="#editVideoModal"><i class="fa fa-edit"></i></button>
+                  {% set ns = namespace(detecting=false) %}
+                  {% for v in detecting_vehicles %}
+                     {%if v and v[1]==openFolder and v[2][:-1]==openVideo[0]%}
+                     {% set ns.detecting = true %}
+                     {%endif%}
+                  {%endfor%}
+                  <button type="button"  id="editVideo" {%if ns.detecting==true%}  onclick="javascript: alert('Cannot edit video as vehicle detections in progress')" {%else%} data-toggle="modal" data-target="#editVideoModal" {%endif%}><i class="fa fa-edit"></i></button>
                   
                   <!-- <i class="fa fa-trash deleteAll"></i> -->
-                  <button type="submit" name="deleteVideo" value="{{openVideo[2]}}" onClick="javascript: return confirm('Please confirm deletion.');"><i class="fa fa-trash deleteAll"></i></button>
+                  <button {%if ns.detecting%} type="button" onclick="alert('Cannot delete video as vehicle detections in progress')" {%else%} type="submit"  onClick="javascript: return confirm('Please confirm deletion.');" {%endif%} name="deleteVideo" value="{{openVideo[2]}}" ><i class="fa fa-trash deleteAll"></i></button>
                   <video width="95%" controls>
                      <source src="{{url_for('static', filename='uploads/'+session['email']+'/'+openVideo[2])}}" type="video/mp4">
                   </video>

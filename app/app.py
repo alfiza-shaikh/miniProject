@@ -332,9 +332,10 @@ def uploads():
     tasks_videos_copy=copy.deepcopy(tasks_videos)
     # print(tasks_videos_copy)
     for line in tasks_videos:
-        task=line.split(' $ ')[0]
-        if detection_task.AsyncResult(task).ready() == True:
+        task=line.split(' $ ')
+        if detection_task.AsyncResult(task[0]).ready() == True:
             # print("Remove Task:",task)
+            flash('Detections completed for video '+task[2]+" in folder "+task[1],"success")
             tasks_videos_copy.remove(line)
     # print("Tasks:","".join(tasks_videos_copy))
     task_file.close()
