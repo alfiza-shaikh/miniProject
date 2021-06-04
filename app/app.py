@@ -362,6 +362,7 @@ def uploads():
 
     # tasks_videos_copy=[t.split(" $ ") for t in tasks_videos_copy]
     # print(tasks_videos_copy)
+    print(openFolder)
     return render_template('uploads.html',folders=folders,openFolder=openFolder,videos=videos,openVideo=openVideo,detecting_vehicles=tasks_videos)
 
 @app.route("/taskvideo", methods=['GET'])
@@ -460,7 +461,7 @@ class Login(FlaskForm):
     email = StringField(label=('Email:'), validators=[validators.DataRequired(),validators.Email(),
      validators.Length(max=120)])
     password = PasswordField(label=('Password:'), validators=[validators.DataRequired(),
-     validators.Length(min=3, max=35,message="Password should be between %(min)d and %(max)d characters long")])
+     validators.Length(min=8, max=35,message="Password should be between %(min)d and %(max)d characters long")])
    
 class Register(FlaskForm):
     name = TextField('Full Name:', validators=[validators.required(), validators.Length(min=3, max=120),
@@ -468,9 +469,9 @@ class Register(FlaskForm):
     email = TextField('Email:', validators=[validators.DataRequired(), validators.Email(),
      validators.Length(max=120)])
     password = PasswordField('Password:', validators=[validators.required(),
-     validators.Length(min=3, max=35,message="Password should be between %(min)d and %(max)d characters long")])
+     validators.Length(min=8, max=35,message="Password should be between %(min)d and %(max)d characters long")])
     cpassword = PasswordField('Confirm Password:', validators=[validators.required(), 
-        validators.Length(min=3, max=35,message="Password should be between %(min)d and %(max)d characters long"),
+        validators.Length(min=8, max=35,message="Password should be between %(min)d and %(max)d characters long"),
                 validators.EqualTo('password', message='Passwords must match')])
 
 
