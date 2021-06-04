@@ -13,6 +13,7 @@ import time
 import datetime
 import re
 import copy
+import json
 from decorators import login_required
 import detection_model.detect_video as detection
 from celery import Celery
@@ -239,11 +240,22 @@ def uploads():
                     flash(msg+' Detecting Vehicles...','success')
                     # detection.main(video_path)
                     dtask=detection_task.apply_async(args=[video_path])
-                    data=str(dtask.id)+" $ "+openFolder+" $ "+request.form['video-name']+"\n"
-                    print(data)
-                    task_file = open("static/celery_task.txt","a")
-                    task_file.write(data)
-                    task_file.close()
+
+                    with open("static/json/celery_task_video.json",'r+') as file:
+                        file_data = json.load(file)
+                        # Join new_dat3a with file_data
+                        new_data={str(dtask.id):filename}
+                        file_data.update(new_data)
+                        # Sets file's current position at offset.
+                        file.seek(0)
+                        # convert back to json.
+                        json.dump(file_data, file, indent = 4)
+
+                    # data=str(dtask.id)+" $ "+openFolder+" $ "+request.form['video-name']+"\n"
+                    # print(data)
+                    # task_file = open("static/celery_task.txt","a")
+                    # task_file.write(data)
+                    # task_file.close()
 
                     # return jsonify({}), 202, {'Location': url_for('taskstatus',task_id=dtask.id)}
                 else:
@@ -327,26 +339,36 @@ def uploads():
     # print(active_tasks)
     # active_tasks=[a['id'] for a in active_tasks]
     # print("Active:",active_tasks)
-    task_file = open("static/celery_task.txt","r")
-    tasks_videos=task_file.readlines()
-    tasks_videos_copy=copy.deepcopy(tasks_videos)
+    task_file = open("static/json/celery_task_video.json","r")
+    tasks_videos= json.load(task_file)
+    # tasks_videos_copy=copy.deepcopy(tasks_videos)
     # print(tasks_videos_copy)
-    for line in tasks_videos:
-        task=line.split(' $ ')
-        if detection_task.AsyncResult(task[0]).ready() == True:
+    for task,video in list(tasks_videos.items()):
+        # task=line.split(' $ ')
+        if detection_task.AsyncResult(task).ready() == True:
             # print("Remove Task:",task)
-            flash('Detections completed for video '+task[2]+" in folder "+task[1],"success")
-            tasks_videos_copy.remove(line)
+            videodetails=database.uploadsdb.getVideoFromRef(video)
+            flash('Detections completed for video '+videodetails[2]+" in folder "+videodetails[1],"success")
+            del tasks_videos[task]
+    with open("static/json/celery_task_video.json",'w') as file:
+        # Sets file's current position at offset.
+        file.seek(0)
+        # convert back to json.
+        json.dump(tasks_videos, file, indent = 4)
     # print("Tasks:","".join(tasks_videos_copy))
-    task_file.close()
-    with open("static/celery_task.txt", "w") as f:
-        f.write("".join(tasks_videos_copy))
+    # task_file.close()
+    # with open("static/celery_task.txt", "w") as f:
+    #     f.write("".join(tasks_videos_copy))
 
-    tasks_videos_copy=[t.split(" $ ") for t in tasks_videos_copy]
-    print(tasks_videos_copy)
-    return render_template('uploads.html',folders=folders,openFolder=openFolder,videos=videos,openVideo=openVideo,detecting_vehicles=tasks_videos_copy)
+    # tasks_videos_copy=[t.split(" $ ") for t in tasks_videos_copy]
+    # print(tasks_videos_copy)
+    return render_template('uploads.html',folders=folders,openFolder=openFolder,videos=videos,openVideo=openVideo,detecting_vehicles=tasks_videos)
 
-
+@app.route("/taskvideo", methods=['GET'])
+def taskvideo():
+    task_file = open("static/json/celery_task_video.json","r")
+    tasks_videos= json.load(task_file)
+    return tasks_videos
 
 #History
 @app.route("/history", methods=['GET', 'POST'])
