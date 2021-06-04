@@ -362,7 +362,6 @@ def uploads():
 
     # tasks_videos_copy=[t.split(" $ ") for t in tasks_videos_copy]
     # print(tasks_videos_copy)
-    print(openFolder)
     return render_template('uploads.html',folders=folders,openFolder=openFolder,videos=videos,openVideo=openVideo,detecting_vehicles=tasks_videos)
 
 @app.route("/taskvideo", methods=['GET'])

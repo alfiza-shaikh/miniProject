@@ -119,7 +119,7 @@ def main(video_path):
                 #cv2.imshow('img', img[0])
                 plate_number = detect_license_plate.main(img[0], infer1, True) 
                 isexist = check_number_exist(past_10_frame_plates, plate_number)
-                if not isexist and plate_number != '':
+                if not isexist and len(plate_number)>0:
                     print( "License Plate Number ->" + plate_number +" Vehicle Type -> " + img[1] + "    Time in video : " + str(floor(frame_num/fps)))
                     list_plate_num.append(plate_number)
                     # Add vehicles to DB

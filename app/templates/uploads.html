@@ -129,7 +129,7 @@
          <div class="col-sm-8 col-md-6 " id="videosList">
             <form action="" id="search-Videos" method="POST">
             </form>
-            <form action="{{ url_for('uploads') }}" id="del-Videos" method="POST">
+            <form action="{{ url_for('uploads') }}?folder={{openFolder}}" id="del-Videos" method="POST">
             <div class="row">
                <div class="col-md-2">
                   <i class="fa fa-check-square check-uncheck-all"></i>
@@ -269,7 +269,7 @@
                   </button>
                </div>
                <div class="modal-body">
-                  <form action="{{url_for('uploads')}}?folder={{openFolder}}" method="post">
+                  <form action="{{url_for('uploads')}}?folder={{openFolder}}&video={{openVideo[0]}}" method="post">
                      <div class="form-group">
                         <label>Video Name *</label>
                         <input type="text" placeholder="{{openVideo[0]}}" name="new-video-name" class="form-control" value="{{openVideo[0]}}"  minlength="3" maxlength="20" required
